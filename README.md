@@ -53,16 +53,26 @@ Nomenclature used to describe the morphological properties of the mitochondrial 
 ![Figure 3](https://github.com/ScienceToolkit/MiNA/blob/master/Documentation%20Images/F3.png)
 
 ##Output Parameters  
-The parameters computed by MiNA are summarized as follows:  
+The parameters computed by MiNA are summarized as follows: 
+
 **Filepath:** This is the complete filepath for the image processed by the *Batch Analysis* macro. It is not included in the *Single Image output.*
-**Individuals:** This is the number of objects in the image that do not contain a junction pixel.  
+
+**Individuals:** This is the number of objects in the image that do not contain a junction pixel. 
+
 **Networks:** This is the number of objects in the image that contain at least 1 junction pixel.  
+
 **Mean Branch Length:** The average length of all branches (distances between connected end point or junction pixels). This is calculated using branches that would be categorized as belonging to either individuals OR networks. The variable is called meanLength in the *Batch Analysis* output table.  
+
 **Median Branch Length:** The median length of all branches (distances between connected end point or junction pixels). This is calculated using branches that would be categorized as belonging to either individuals OR networks. The variable is called medianLength in the *Batch Analysis* output table.  
+
 **Length Standard Deviation:** This is the standard deviation of all branches lengths treated as a population. It is called lengthStandardDeviation in the *Batch Analysis* output table.  
+
 **Mean Network Size (Branches):** This is the mean number of branches per network. The variable is called medianNetworkSize in the *Batch Analysis* output table.    
+
 **Median Network Size (Branches):** This is the median number of branches per network. The variable is called medianNetworkSize in the *Batch Analysis* output table.      
+
 **Network Size Standard Deviation:** This is the standard deviation of the number of branches in each independent network as calculated using the formula for the population standard deviation. The variable is called medianNetworkSize in the *Batch Analysis* output table  
+
 **Mitochondrial Footprint:**This is the total area in the image consumed by signal after being separated from the background. It is the number of pixels in the binary image containing signal multiplied by the area of a pixel if the calibration information is present.  
 
 ##Optional Preprocessing
@@ -87,6 +97,7 @@ To process a single image file or ROI, first download and install [MiNA Single I
 To process a folder full of image files, first download and install [MiNA Batch Analysis.ijm](https://github.com/ScienceToolkit/MiNA/blob/master/MiNA%20ImageJ%20Macros/MiNA%20Batch%20Analysis.ijm). Once the macro is installed simply click the MiNA icon and follow the on screen instructions, filling out what preprocessing you wish to apply, what folder is to be processed, and proofing the skeletons produced to let the program know whether they are to be included in the analysis or skipped.  
 
 #Limitations
+MiNA effectively processes two dimensional images of fluorescently labelled mitochondrial networks. However, the analysis relies on the production of an accurate skeleton to faithfully report parameters representing measurements of the mitochondrial features. Blurry or noisy images can produce poor results, where non-connected regions are represented as connected or connected regions are represented with discontinuities. Further more, the images currently must be two dimensional, which limits its usage to thin adherant cultured mammalian cells. Extensive three dimensional can not be captured by the macro as the structured are all projected into two dimensions. This problem has been noted and the methods to deal with thick cells have been investigated and reported upon by others (Nikolaisen, 2015). 
 
 #Bibliography
 Arganda-Carreras, I., 2016. AnalyzeSkeleton. ImageJ. Available at: http://imagej.net/AnalyzeSkeleton.  
