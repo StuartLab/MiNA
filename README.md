@@ -102,13 +102,10 @@ MiNA effectively processes two dimensional images of fluorescently labelled mito
 ![Figure 6](https://github.com/ScienceToolkit/MiNA/blob/master/Documentation%20Images/F6.png) 
 
 #Bibliography
-Arganda-Carreras, I., 2016. AnalyzeSkeleton. ImageJ. Available at: http://imagej.net/AnalyzeSkeleton.  
-
 Leonard, A.P. et al., 2015. Quantitative analysis of mitochondrial morphology and membrane potential in living cells using high-content imaging, machine learning, and morphological binning. Biochimica et Biophysica Acta - Molecular Cell Research, 1853(2), pp.348–360. Available at: http://dx.doi.org/10.1016/j.bbamcr.2014.11.002.  
 
 Nikolaisen, J. et al., 2014. Automated quantification and integrative analysis of 2D and 3D mitochondrial shape and network properties. PLoS ONE, 9(7), pp.1–16.  
 
-Saalfeld, S., 2010. Enhance Local Contrast (CLAHE). ImageJ. Available at: http://imagej.net/Enhance_Local_Contrast_(CLAHE).
 
 
 
