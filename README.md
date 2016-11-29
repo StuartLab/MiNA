@@ -47,9 +47,22 @@ Nomenclature used to describe the morphological properties of the mitochondrial 
 
 ![Figure 3](https://github.com/ScienceToolkit/MiNA/blob/master/Documentation%20Images/F3.png)
 
-##Output Parameters
+##Output Parameters  
+The parameters computed by MiNA are summarized as follows:  
+Parameter | Description
+--- | ---
+Filepath | This is the complete filepath for the image processed by the *Batch Analysis* macro. It is not included in the *Single Image output.*
+Individuals | This is the number of objects in the image that do not contain a junction pixel. 
+Networks | This is the number of objects in the image that contain at least 1 junction pixel. 
 
 ##Optional Preprocessing
+MiNA offers three options for preprocessing conveniently, though users can choose to preprocess the images separately as they wish and then analyse the image with the macro. The options available are **Unsharp Mask, CLAHE, and Median filter**. These options help to sharpen edge details and discontinuities in the mitochondrial network, enhance contrast locally throughout the image, and reduce the negative effects of salt and pepper noise. The sequential use of these in producing an accurate skeleton is demonstrated in figure 4.  
+
+![Figure 4](https://github.com/ScienceToolkit/MiNA/blob/master/Documentation%20Images/F4.png)  
+
+**Unsharp Mask:** Subtracts a blurred image using a gaussian blur of radius 2. This step helps to sharpen the image producing a visual change similar to deconvolution. This is useful on most images, especially those that appear blurry.  
+**CLAHE:** Contrast limited adaptive histogram equalization helps to maximize the use of the available dynamic range locally. It is applied in the macro with an arbitrary neighbourhood block size of 127 pixels. This is useful if the image is not particularly bright and there is poor contrast between the signal and background.  
+**Median Filtering:** Median filtering uses a 2 pixel radius to remove spurious signals (such as noise) from the image. This is useful if you find the skeleton produced is overly fragmented or irregular, which may result if the image is noisy. It should also be used when unsharp masking or CLAHE is used as these both amplify noise significantly.  
 
 #Usage
 
