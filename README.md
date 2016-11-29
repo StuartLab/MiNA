@@ -1,16 +1,16 @@
 #Table of Contents
-1. [Introduction](https://github.com/ScienceToolkit/MiNA/wiki/MiNA-Project-Documentation#introduction)  
-2. [System Requirements](https://github.com/ScienceToolkit/MiNA/wiki/MiNA-Project-Documentation#system-requirements)  
-3. [Installing the Software](https://github.com/ScienceToolkit/MiNA/wiki/MiNA-Project-Documentation#installing-the-software)  
-4.[About the Macros](https://github.com/ScienceToolkit/MiNA/wiki/MiNA-Project-Documentation#about-the-macros)  
-4.1. [Terminology Used](https://github.com/ScienceToolkit/MiNA/wiki/MiNA-Project-Documentation#terminology-used)  
-4.2. [Output Parameters](https://github.com/ScienceToolkit/MiNA/wiki/MiNA-Project-Documentation#output-parameters)  
-4.3. [Optional Preprocessing](https://github.com/ScienceToolkit/MiNA/MiNA-Project-Documentation#wiki/optional-preprocessing)  
-5. [Macro Usage](https://github.com/ScienceToolkit/MiNA/wiki/MiNA-Project-Documentation#macro-usage)  
-5.1. [MiNA Single Image](https://github.com/ScienceToolkit/MiNA/wiki/MiNA-Project-Documentation#mina-single-image)  
-5.2. [MiNA Batch Analysis](https://github.com/ScienceToolkit/MiNA/wiki/MiNA-Project-Documentation#mina-batch-analysis)  
-6. [Limitations](https://github.com/ScienceToolkit/MiNA/wiki/MiNA-Project-Documentation#limitations)  
-7. [Bibliography](https://github.com/ScienceToolkit/MiNA/wiki/MiNA-Project-Documentation#bibliography)  
+1. [Introduction](https://github.com/ScienceToolkit/MiNA#introduction)  
+2. [System Requirements](https://github.com/ScienceToolkit/MiNA#system-requirements)  
+3. [Installing the Software](https://github.com/ScienceToolkit/MiNA#installing-the-software)  
+4.[About the Macros](https://github.com/ScienceToolkit/MiNA#about-the-macros)  
+4.1. [Terminology Used](https://github.com/ScienceToolkit/MiNA#terminology-used)  
+4.2. [Output Parameters](https://github.com/ScienceToolkit/MiNA#output-parameters)  
+4.3. [Optional Preprocessing](https://github.com/ScienceToolkit/MiNA#optional-preprocessing)  
+5. [Macro Usage](https://github.com/ScienceToolkit/MiNA#macro-usage)  
+5.1. [MiNA Single Image](https://github.com/ScienceToolkit/MiNA#mina-single-image)  
+5.2. [MiNA Batch Analysis](https://github.com/ScienceToolkit/MiNA#mina-batch-analysis)  
+6. [Limitations](https://github.com/ScienceToolkit/MiNA#limitations)  
+7. [Bibliography](https://github.com/ScienceToolkit/MiNA#bibliography)  
 
 #Introduction
 The Mitochondrial Network Analysis (MiNA) macro tools were developed for ImageJ to provide biologists studying mitochondrial network morphology and dynamics with a simple, effective method of quantifying mitochondrial network morphology in images of cultured adherent animal cells. Mitochondrial network morphology is a dynamic characteristic of cells that is related to the efficiency of oxidative phosphorylation, cell cycle phase, apoptotic cell death, and other important aspects of normal and aberrant cell physiology. MiNA is based on a foundation of analytical techniques that have been developed by  various authors.  The work is largely inspired by previous work conducted by Nikolaisen _et al_ (2014).
