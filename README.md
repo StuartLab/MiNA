@@ -37,10 +37,15 @@ The macro tools operate to summarize the morphological characteristics of the mi
 ![Figure 2](https://github.com/ScienceToolkit/MiNA/blob/master/Documentation%20Images/F2.png)
 
 ##Terminology Used
-Nomenclature used to describe the morphological properties of the mitochondrial networks is adopted and modified from Leonard *et al* (2015). The terms used and their definitions are as follows:  
+Nomenclature used to describe the morphological properties of the mitochondrial networks is adopted and modified from Leonard *et al* (2015). The terms used and their definitions are listed below and visually demonstrated in figure 3.   
+* ** End-Point Pixel** - A pixel having one or no neighbouring pixels that are a part of the skeleton. These mark the terminus of rods and network branches, as well as represent small punctate objects.  
+* **Junction Pixel** - A pixel having three or more neighbouring pixels that are a part of the skeleton.These mark the intersection points of branches in networks.  
+* **Slab Pixel** - A pixel having exactly two neighbouring pixels that are a part of the skeleton. 
 * **Individual** - a mitochondrial feature that does not contain any branch pixels in its representation. This category would include puncta, rods, and large/round mitochondria. 
 * **Network** - a mitochondrial feature containing at least one branch pixel in its representation.
-* **Branch** - the stretch of slab pixels connecting one end point pixel or junction pixel to the next. An individual is a single branch while a network is composed of multiple branches.
+* **Branch** - the stretch of slab pixels connecting one end point pixel or junction pixel to the next. An individual is a single branch while a network is composed of multiple branches.  
+
+![Figure 3](https://github.com/ScienceToolkit/MiNA/blob/master/Documentation%20Images/F3.png)
 
 ##Output Parameters
 
