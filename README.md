@@ -1,16 +1,21 @@
+
+**IMPORTANT**
+GitHub does not support downloading single files. To "download" the scripts for use click on the script, copy and past it into a text document, and save it with the same filename as it has on the GitHub page.  
+
+
 #Table of Contents
-1. [Introduction](https://github.com/ScienceToolkit/MiNA#introduction)  
-2. [System Requirements](https://github.com/ScienceToolkit/MiNA#system-requirements)  
-3. [Installing the Software](https://github.com/ScienceToolkit/MiNA#installing-the-software)  
-4.[About the Macros](https://github.com/ScienceToolkit/MiNA#about-the-macros)  
-4.1. [Terminology Used](https://github.com/ScienceToolkit/MiNA#terminology-used)  
-4.2. [Output Parameters](https://github.com/ScienceToolkit/MiNA#output-parameters)  
-4.3. [Optional Preprocessing](https://github.com/ScienceToolkit/MiNA#optional-preprocessing)  
-5. [Macro Usage](https://github.com/ScienceToolkit/MiNA#macro-usage)  
-5.1. [MiNA Single Image](https://github.com/ScienceToolkit/MiNA#mina-single-image)  
-5.2. [MiNA Batch Analysis](https://github.com/ScienceToolkit/MiNA#mina-batch-analysis)  
-6. [Limitations](https://github.com/ScienceToolkit/MiNA#limitations)  
-7. [Bibliography](https://github.com/ScienceToolkit/MiNA#bibliography)  
+1. [Introduction](#introduction)  
+2. [System Requirements](#system-requirements)  
+3. [Installing the Software](#installing-the-software)  
+4.[About the Macros](#about-the-macros)  
+4.1. [Terminology Used](#terminology-used)  
+4.2. [Output Parameters](#output-parameters)  
+4.3. [Optional Preprocessing](#optional-preprocessing)  
+5. [Macro Usage](#macro-usage)  
+5.1. [MiNA Single Image](#mina-single-image)  
+5.2. [MiNA Batch Analysis](#mina-batch-analysis)  
+6. [Limitations](#limitations)  
+7. [Bibliography](#bibliography)  
 
 #Introduction
 The Mitochondrial Network Analysis (MiNA) macro tools were developed for ImageJ to provide biologists studying mitochondrial network morphology and dynamics with a simple, effective method of quantifying mitochondrial network morphology in images of cultured adherent animal cells. Mitochondrial network morphology is a dynamic characteristic of cells that is related to the efficiency of oxidative phosphorylation, cell cycle phase, apoptotic cell death, and other important aspects of normal and aberrant cell physiology. MiNA is based on a foundation of analytical techniques that have been developed by  various authors.  The work is largely inspired by previous work conducted by Nikolaisen _et al_ (2014).
@@ -49,11 +54,16 @@ Nomenclature used to describe the morphological properties of the mitochondrial 
 
 ##Output Parameters  
 The parameters computed by MiNA are summarized as follows:  
-Parameter | Description
------------ | ----------------------------------------------------------------------------------
-Filepath | This is the complete filepath for the image processed by the *Batch Analysis* macro. It is not included in the *Single Image output.*
-Individuals | This is the number of objects in the image that do not contain a junction pixel. 
-Networks | This is the number of objects in the image that contain at least 1 junction pixel. 
+**Filepath:** This is the complete filepath for the image processed by the *Batch Analysis* macro. It is not included in the *Single Image output.*
+**Individuals:** This is the number of objects in the image that do not contain a junction pixel.  
+**Networks:** This is the number of objects in the image that contain at least 1 junction pixel.  
+**Mean Branch Length:** The average length of all branches (distances between connected end point or junction pixels). This is calculated using branches that would be categorized as belonging to either individuals OR networks. The variable is called meanLength in the *Batch Analysis* output table.  
+**Median Branch Length:** The median length of all branches (distances between connected end point or junction pixels). This is calculated using branches that would be categorized as belonging to either individuals OR networks. The variable is called medianLength in the *Batch Analysis* output table.  
+**Length Standard Deviation:** This is the standard deviation of all branches lengths treated as a population. It is called lengthStandardDeviation in the *Batch Analysis* output table.  
+**Mean Network Size (Branches):** This is the mean number of branches per network. The variable is called medianNetworkSize in the *Batch Analysis* output table.    
+**Median Network Size (Branches):** This is the median number of branches per network. The variable is called medianNetworkSize in the *Batch Analysis* output table.      
+**Network Size Standard Deviation:** This is the standard deviation of the number of branches in each independent network as calculated using the formula for the population standard deviation. The variable is called medianNetworkSize in the *Batch Analysis* output table  
+**Mitochondrial Footprint:**This is the total area in the image consumed by signal after being separated from the background. It is the number of pixels in the binary image containing signal multiplied by the area of a pixel if the calibration information is present.  
 
 ##Optional Preprocessing
 MiNA offers three options for preprocessing conveniently, though users can choose to preprocess the images separately as they wish and then analyse the image with the macro. The options available are **Unsharp Mask, CLAHE, and Median filter**. These options help to sharpen edge details and discontinuities in the mitochondrial network, enhance contrast locally throughout the image, and reduce the negative effects of salt and pepper noise. The sequential use of these in producing an accurate skeleton is demonstrated in figure 4.  
@@ -65,10 +75,16 @@ MiNA offers three options for preprocessing conveniently, though users can choos
 **Median Filtering:** Median filtering uses a 2 pixel radius to remove spurious signals (such as noise) from the image. This is useful if you find the skeleton produced is overly fragmented or irregular, which may result if the image is noisy. It should also be used when unsharp masking or CLAHE is used as these both amplify noise significantly.  
 
 #Usage
+**IMPORTANT**
+GitHub does not support downloading single files. To "download" the scripts for use click on the script, copy and past it into a text document, and save it with the same filename as it has on the GitHub page.
 
 ##MiNA Single Image
+To process a single image file or ROI, first download and install [MiNA Single Image.ijm](https://github.com/ScienceToolkit/MiNA/blob/master/MiNA%20ImageJ%20Macros/MiNA%20Batch%20Analysis.ijm). Once the macro is installed simply open the image you wish to process, choose any of the preprocessing steps you wish to apply when prompted, and click OK. The use of the macro is demonstrated in figure 5.  
+
+![Figure 5](https://github.com/ScienceToolkit/MiNA/blob/master/Documentation%20Images/F5.png) 
 
 ##MiNA Batch Analysis
+To process a folder full of image files, first download and install [MiNA Batch Analysis.ijm](https://github.com/ScienceToolkit/MiNA/blob/master/MiNA%20ImageJ%20Macros/MiNA%20Batch%20Analysis.ijm). Once the macro is installed simply click the MiNA icon and follow the on screen instructions, filling out what preprocessing you wish to apply, what folder is to be processed, and proofing the skeletons produced to let the program know whether they are to be included in the analysis or skipped.  
 
 #Limitations
 
