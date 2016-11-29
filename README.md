@@ -1,6 +1,6 @@
 
-**IMPORTANT**
-GitHub does not support downloading single files. To "download" the scripts for use click on the script, copy and past it into a text document, and save it with the same filename as it has on the GitHub page.  
+**IMPORTANT**  
+GitHub does not support directly downloading single files. To "download" the scripts for use click on the script, open the file in browser and click the RAW button to view the script as plain text. You may then right click, select save as, and save the file with the filename as shown in the GitHub folder.
 
 
 #Table of Contents
@@ -85,8 +85,8 @@ MiNA offers three options for preprocessing conveniently, though users can choos
 **Median Filtering:** Median filtering uses a 2 pixel radius to remove spurious signals (such as noise) from the image. This is useful if you find the skeleton produced is overly fragmented or irregular, which may result if the image is noisy. It should also be used when unsharp masking or CLAHE is used as these both amplify noise significantly.  
 
 #Usage
-**IMPORTANT**
-GitHub does not support downloading single files. To "download" the scripts for use click on the script, copy and past it into a text document, and save it with the same filename as it has on the GitHub page.
+**IMPORTANT**  
+GitHub does not support directly downloading single files. To "download" the scripts for use click on the script, open the file in browser and click the RAW button to view the script as plain text. You may then right click, select save as, and save the file with the filename as shown in the GitHub folder.
 
 ##MiNA Single Image
 To process a single image file or ROI, first download and install [MiNA Single Image.ijm](https://github.com/ScienceToolkit/MiNA/blob/master/MiNA%20ImageJ%20Macros/MiNA%20Batch%20Analysis.ijm). Once the macro is installed simply open the image you wish to process, choose any of the preprocessing steps you wish to apply when prompted, and click OK. The use of the macro is demonstrated in figure 5.  
@@ -97,7 +97,9 @@ To process a single image file or ROI, first download and install [MiNA Single I
 To process a folder full of image files, first download and install [MiNA Batch Analysis.ijm](https://github.com/ScienceToolkit/MiNA/blob/master/MiNA%20ImageJ%20Macros/MiNA%20Batch%20Analysis.ijm). Once the macro is installed simply click the MiNA icon and follow the on screen instructions, filling out what preprocessing you wish to apply, what folder is to be processed, and proofing the skeletons produced to let the program know whether they are to be included in the analysis or skipped.  
 
 #Limitations
-MiNA effectively processes two dimensional images of fluorescently labelled mitochondrial networks. However, the analysis relies on the production of an accurate skeleton to faithfully report parameters representing measurements of the mitochondrial features. Blurry or noisy images can produce poor results, where non-connected regions are represented as connected or connected regions are represented with discontinuities. Further more, the images currently must be two dimensional, which limits its usage to thin adherant cultured mammalian cells. Extensive three dimensional can not be captured by the macro as the structured are all projected into two dimensions. This problem has been noted and the methods to deal with thick cells have been investigated and reported upon by others (Nikolaisen, 2015). 
+MiNA effectively processes two dimensional images of fluorescently labelled mitochondrial networks. However, the analysis relies on the production of an accurate skeleton to faithfully report parameters representing measurements of the mitochondrial features. Blurry or noisy images can produce poor results, where non-connected regions are represented as connected or connected regions are represented with discontinuities. Further more, the images currently must be two dimensional, which limits its usage to thin adherant cultured mammalian cells. Extensive three dimensional can not be captured by the macro as the structured are all projected into two dimensions. This problem has been noted and the methods to deal with thick cells have been investigated and reported upon by others (Nikolaisen, 2015). The artifacts that may be produced in the analysis are summarized in figure 6.  
+
+![Figure 6](https://github.com/ScienceToolkit/MiNA/blob/master/Documentation%20Images/F6.png) 
 
 #Bibliography
 Arganda-Carreras, I., 2016. AnalyzeSkeleton. ImageJ. Available at: http://imagej.net/AnalyzeSkeleton.  
