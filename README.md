@@ -50,7 +50,7 @@ Nomenclature used to describe the morphological properties of the mitochondrial 
 ##Output Parameters  
 The parameters computed by MiNA are summarized as follows:  
 Parameter | Description
---- | ---
+----------- | ----------------------------------------------------------------------------------
 Filepath | This is the complete filepath for the image processed by the *Batch Analysis* macro. It is not included in the *Single Image output.*
 Individuals | This is the number of objects in the image that do not contain a junction pixel. 
 Networks | This is the number of objects in the image that contain at least 1 junction pixel. 
