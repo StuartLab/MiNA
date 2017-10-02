@@ -1,10 +1,10 @@
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //      MACRO: Mitochondrial Network Analysis (MiNA) - Single Image           //
-//      AUTHOR: Andrew Valente                                                // 
+//      AUTHOR: Andrew Valente                                                //
 //      EMAIL: valentaj94@gmail.com                                           //
 //      LAST EDITED: October 31st, 2016                                       //
-//                                                                            //  
+//                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
 //    This program is free software: you can redistribute it and/or modify
@@ -57,10 +57,10 @@ macro "MiNA Single Image Action Tool - C059T3e16S" {
 		showMessage("No images are open.");
 		exit();
 	}
-	
+
 	//Produce GUI to set preprocessing preferences
 	setUp();
-        
+
     //Duplicate region of interest and collect general information
     showStatus("MiNA: Getting image information...");
 	run("Duplicate...", "title=Original");
@@ -68,7 +68,7 @@ macro "MiNA Single Image Action Tool - C059T3e16S" {
 	run("Grays");
 	getDimensions(width, height, channels, slices, frames);
 	getPixelSize(unit, pixelWidth, pixelHeight);
-        
+
 	//Preprocess image
 	preprocessing();
 
@@ -79,13 +79,13 @@ macro "MiNA Single Image Action Tool - C059T3e16S" {
 	run("32-bit");
 	run("Make Binary");
 	run("8-bit");
-	
+
     //Calculate the mitochondrial footprint
 	getStatistics(area, Mean, min, max);
 	mitoArea = pow(pixelWidth, 2.0) * parseFloat(width) * parseFloat(height) * (Mean / parseFloat(max)) ;
-	
+
     //Skeletonize the binary image and overlay it onto the original
-	run("Skeletonize");
+	run("Skeletonize (2D/3D)");
 	run("Red");
 	selectWindow("Original");
 	run("Add Image...", "image=TestSkeleton x=0 y=0 opacity=100 zero");
@@ -104,26 +104,26 @@ macro "MiNA Single Image Action Tool - C059T3e16S" {
 	selectWindow("TestSkeleton");
 	run("Analyze Skeleton (2D/3D)", "prune=none show display");
 	close("Tagged skeleton");
-	close("TestSkeleton"); 
+	close("TestSkeleton");
 	close("TestSkeleton-labeled-skeletons");
-	
+
 	//Collect relevant output from the tables and close these tables.
-	selectWindow("Results"); rows = nResults; 
+	selectWindow("Results"); rows = nResults;
 	BranchCounts = newArray(rows);
 	for (i=0; i<rows; i++) {
 		BranchCounts[i] = getResult("# Branches", i);
 	}
 	selectWindow("Results"); run("Close");
-	
+
 	IJ.renameResults("Branch information", "Results");
-	selectWindow("Results"); rows = nResults; 
+	selectWindow("Results"); rows = nResults;
 	BranchLengths = newArray(rows);
 	for (i=0; i<rows; i++) {
 		BranchLengths[i] = getResult("Branch length", i);
-	}	
+	}
 	run("Close");
 
-	//Feature counts 
+	//Feature counts
 	individuals = parseFloat(countIndividuals(BranchCounts));
 	networks = parseFloat(countNetworks(BranchCounts));
 
@@ -144,7 +144,7 @@ macro "MiNA Single Image Action Tool - C059T3e16S" {
 	medianBranches = median(networkBranchCounts);
 	sdBranches = sd(networkBranchCounts);
 
-	Measurement = newArray("Individuals", 
+	Measurement = newArray("Individuals",
 			       "Networks",
 			       "Mean Branch Length",
 			       "Median Branch Length",
@@ -173,22 +173,22 @@ macro "MiNA Single Image Action Tool - C059T3e16S" {
 			 "Counts",
 			 "Counts",
 			 unit+" squared");
-					 
-	Array.show("MiNA Output", Measurement, Value, Units);   
-        
+
+	Array.show("MiNA Output", Measurement, Value, Units);
+
 }
 
 // Macro Main-------------------------------------------------------------------
 macro "MiNA Batch Analysis Action Tool - C059T3e16B" {
-    
+
     //Select a Directory to Process
 	dir = getDirectory("Choose a Directory ");
-	
+
 	//Process all files
 	setUp();
-	
+
 	processFiles(dir);
-	
+
 	//Rename to readable column names for user
     filepaths = filenameARRAY;
     individuals = individualsARRAY;
@@ -200,7 +200,7 @@ macro "MiNA Batch Analysis Action Tool - C059T3e16B" {
     medianNetworkSize = medianBranchesARRAY;
     networkSizeStandardDeviation = sdBranchesARRAY;
     mitochondrialFootprint = mitoAreaARRAY;
-	
+
 	//Display table of results
 	Array.show("MiNA Output",
 	           filepaths,
@@ -213,7 +213,7 @@ macro "MiNA Batch Analysis Action Tool - C059T3e16B" {
 	           medianNetworkSize,
 	           networkSizeStandardDeviation,
 	           mitochondrialFootprint);
-	           
+
 }
 
 //Process Files...
@@ -228,7 +228,7 @@ function processFiles(dir) {
       }
   }
 }
-  
+
 //Process file...
 function processFile(path) {
 
@@ -244,10 +244,10 @@ function processFile(path) {
 	run("Grays");
 	getDimensions(width, height, channels, slices, frames);
 	getPixelSize(unit, pixelWidth, pixelHeight);
-        
+
     //Apply unsharp mask to image if selected
 	selectWindow("Original");
-	
+
 	//Preprocess the image
 	preprocessing();
 
@@ -258,11 +258,11 @@ function processFile(path) {
 	run("32-bit");
 	run("Make Binary");
 	run("8-bit");
-	
+
     //Calculate the mitochondrial footprint
 	getStatistics(area, Mean, min, max);
 	mitoArea = pow(pixelWidth, 2.0) * parseFloat(width) * parseFloat(height) * (Mean / parseFloat(max)) ;
-	
+
     //Skeletonize the binary image and overlay it onto the original
 	run("Skeletonize");
 	run("Red");
@@ -283,42 +283,42 @@ function processFile(path) {
 
 	selectWindow("Original");
 	saveAs("png", path);
-	
+
 	if (QC == true) {
 
 		//Analyze the skeleton using the Analyze Skeleton plugin.
 		selectWindow("TestSkeleton");
 		run("Analyze Skeleton (2D/3D)", "prune=none show display");
 		close("Tagged skeleton");
-		close("TestSkeleton"); 
+		close("TestSkeleton");
 		close("TestSkeleton-labeled-skeletons");
-		
+
 		//Collect relevant output from the tables, procede to close these tables.
-		selectWindow("Results"); rows = nResults; 
+		selectWindow("Results"); rows = nResults;
 		BranchCounts = newArray(rows);
 		for (i=0; i<rows; i++) {
 			BranchCounts[i] = getResult("# Branches", i);
 		}
 		selectWindow("Results"); run("Close");
-		
+
 		IJ.renameResults("Branch information", "Results");
-		selectWindow("Results"); rows = nResults; 
+		selectWindow("Results"); rows = nResults;
 		BranchLengths = newArray(rows);
 		for (i=0; i<rows; i++) {
 			BranchLengths[i] = getResult("Branch length", i);
-		}	
-		
+		}
+
 		run("Close");
-	
+
 		//Feature counts
 		individuals = parseFloat(countIndividuals(BranchCounts));
 		networks = parseFloat(countNetworks(BranchCounts));
-	
+
 		//Size descriptors for lengths
 		meanLength = mean(BranchLengths);
 		medianLength = median(BranchLengths);
 		sdLength = sd(BranchLengths);
-	
+
 		//Strip non networked branches
 		networkBranchCounts = newArray();
 		for (i=0; i<BranchCounts.length; i++) {
@@ -326,11 +326,11 @@ function processFile(path) {
 				networkBranchCounts = Array.concat(networkBranchCounts, BranchCounts[i]);
 			}
 		}
-		
+
 		meanBranches = mean(networkBranchCounts);
 		medianBranches = median(networkBranchCounts);
 		sdBranches = sd(networkBranchCounts);
-	
+
         //Update column vectors
         filenameARRAY = Array.concat(filenameARRAY, path);
         individualsARRAY = Array.concat(individualsARRAY, individuals);
@@ -470,36 +470,36 @@ function setUp() {
 	Dialog.addSlider("Radius: ", 0, 20, 2);
 	Dialog.addSlider("Mask Strength: ", 0, 0.9, 0.6);
 	Dialog.addCheckbox("Tophat (Iannetti et al., 2016)" , false);
-	
+
     Dialog.show();
-        
+
 	CLAHE = Dialog.getCheckbox();
 	CLAHE_BLOCKSIZE = Dialog.getNumber();
 	CLAHE_HISTOGRAM = Dialog.getNumber();
 	CLAHE_MAXSLOPE = Dialog.getNumber();
-	
+
 	MED = Dialog.getCheckbox();
 	MED_RADIUS = Dialog.getNumber();
-	
+
 	UNSHARP = Dialog.getCheckbox();
 	UNSHARP_RADIUS = Dialog.getNumber();
 	UNSHARP_STRENGTH = Dialog.getNumber();
 	TOPHAT = Dialog.getCheckbox();
-	
+
 }
 
 //Preprocessing...
 function preprocessing() {
-	
+
 	//Apply unsharp mask to image if selected
 	selectWindow("Original");
 	if (UNSHARP == true) {
 		run("Unsharp Mask...", "radius="+toString(UNSHARP_RADIUS)+" mask="+toString(UNSHARP_STRENGTH));
 	}
-        
+
     //Apply contrast limited adaptive histogram equalization if selected
 	if (CLAHE == true) {
-		run("Enhance Local Contrast (CLAHE)", 
+		run("Enhance Local Contrast (CLAHE)",
                     "blocksize="+toString(CLAHE_BLOCKSIZE)+" histogram="+toString(CLAHE_HISTOGRAM)+" maximum="+toString(CLAHE_MAXSLOPE)+" mask=*None* fast_(less_accurate)");
 	}
 
@@ -507,9 +507,9 @@ function preprocessing() {
 	if (MED == true) {
 		run("Median...", "radius="+toString(MED_RADIUS));
 	}
-	
+
 	//Apply tophat filter if selected
 	if (TOPHAT == true) {
-		run("Convolve...", "text1=[0 0 -1 -1 -1 0 0 \n0 -1 -1 -1 -1 -1 0\n-1 -1 3 3 3 -1 -1\n-1 -1 3 4 3 -1 -1\n-1 -1 3 3 3 -1 -1\n0 -1 -1 -1 -1 -1 0\n0 0 -1 -1 -1 0 0 \n] normalize");	
+		run("Convolve...", "text1=[0 0 -1 -1 -1 0 0 \n0 -1 -1 -1 -1 -1 0\n-1 -1 3 3 3 -1 -1\n-1 -1 3 4 3 -1 -1\n-1 -1 3 3 3 -1 -1\n0 -1 -1 -1 -1 -1 0\n0 0 -1 -1 -1 0 0 \n] normalize");
 	}
 }
