@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////
-//	TITLE: MiNA - Macro Pack 2D/3D/4D + Batch Process Folder
+//	TITLE: MiNA - Macro Pack 2D/3D/4D
 // 	CONTACT: valentaj94@gmail.com
 ////////////////////////////////////////////////////////////////////////
 
@@ -17,7 +17,7 @@
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // GLOBAL VARIABLES ------------------------------------------------------------
-// Output Arrays...
+// Summary output arrays...
 var FILENAME = newArray();
 var FILEPATH = newArray();
 var FRAME = newArray();
@@ -34,21 +34,39 @@ var MITO_COVERAGE = newArray();
 var LENGTH_UNITS = newArray();
 var COVERAGE_UNITS = newArray();
 
-// Preprocessing Constants...
-var CLAHE = false;
-var CLAHE_BLOCKSIZE = 127;
-var CLAHE_HISTOGRAM = 256;
-var CLAHE_MAXSLOPE = 3;
+// Analyze Skeleton 2D/3D "Results" arrays...
+var RESULTS_BRANCHES = newArray();
+var RESULTS_JUNCTIONS = newArray();
+var RESULTS_END_POINTS = newArray();
+var RESULTS_JUNCTION_VOXELS = newArray();
+var RESULTS_SLAB_VOXELS = newArray();
+var RESULTS_MEAN_LENGTH = newArray();
+var RESULTS_TRIPLE_POINTS = newArray();
+var RESULTS_QUAD_POINTS = newArray();
+var RESULTS_MAX_LENGTH = newArray();
 
-var MED = false;
-var MED_RADIUS = 2;
+// Analyze Skeleton 2D/3D "Branch Information" (BI) arrays...
+var BI_SKELETON_ID = newArray();
+var BI_BRANCH_LENGTH = newArray();
+var BI_V1X = newArray();
+var BI_V1Y = newArray();
+var BI_V1Z = newArray();
+var BI_V2X = newArray();
+var BI_V2Y = newArray();
+var BI_V2Z = newArray();
+var BI_EUCLIDEAN = newArray();
+var BI_RUNNING_AVERAGE = newArray();
+var BI_INNER_THIRD = newArray();
+var BI_AVERAGE_INTENSITY = newArray();
 
-var MEXICAN_HAT = false;
-var MEXICAN_HAT_RADIUS = 5;
+// Settings...
+var THRESHOLD_METHOD = "Otsu";
+var PREPROCESSING_MACRO = "None";
 
-var UNSHARP = false;
-var UNSHARP_RADIUS = 2;
-var UNSHARP_STRENGTH = 0.6;
+// Session SETUP -----------------------------------------------------------
+macro "MiNA - Session Setup" {
+
+}
 
 // PREPROCESSING MACRO ---------------------------------------------------------
 macro "MiNA - Preprocessing Helper" {
@@ -62,6 +80,11 @@ macro "MiNA - Single Image" {
 
 // BATCH PROCESS FOLDER --------------------------------------------------------
 macro "MiNA - Process Folder" {
+
+}
+
+// RESULTS VIEWER --------------------------------------------------------------
+macro "MiNA - Results Viewer" {
 
 }
 
@@ -205,6 +228,63 @@ function analyzeMitos() {
     // Enter silent execution.
     setBatchMode(true);
 
+    // Create copies to work on. A copy is made for the original, which results
+    // are overlaid upon and one that will be binarized. From the binary, an
+    // additional copy will be made. That is done later to reduce processing
+    // overhead.
+    run("Duplicate...", "title=Original");
+    selectWindow("Original");
+    run("Duplicate...", "title=Binarized");
 
+    selectWindow("Original");
+    run("RGB");
 
+    selectWindow("Binarized");
+    run("8-bit");
+
+    // Binarize the stack. Various schemes can be used. Otsu is recommended.
+    run("Make Binary", "method=" + THRESHOLD_METHOD + " background=Dark");
+    run("Cyan");
+
+    // Duplicate the binary for skeletonizing.
+    run("Duplicate...", "title=Skeleton");
+    run("Skeletonize (2D/3D)");
+    run("Magenta");
+
+    // Overlay it and check
+    selectWindow("Original");
+    run("Add Image...", "image=Binary x=0 y=0 opacity=50 zero");
+    run("Add Image...", "image=Skeleton x=0 y=0 opacity=100 zero");
+
+    setBatchMode("exit and display")
+
+    Dialog.create("Quality Control");
+    Dialog.addCheckbox("Is the binary and skeleton are faithful?.", true);
+    Dialog.show();
+    qualityCheck = Dialog.getCheckbox();
+
+    // If the quality is not good enough close the duplicates and exit.
+    if (qualityCheck == false) {
+        selectWindow("Original");
+        close();
+        selectWindow("Binary");
+        close();
+        selectWindow("Skeleton");
+        close();
+        exit("Analysis aborted.");
+    }
+
+    // Analyze the skeleton
+    run("Analyze Skeleton (2D/3D)", "prune=none show");
+    selectWindow("Tagged skeleton");
+    close();
+
+    //TODO: Keep it goin'!
+    // Grab the resulting arrays
+    selectWindow("Results");
+    rows = nResults;
+    for (i=0; i<rows; i++) {
+        getResult("# Branches", i);
+    }
+    selectWindow("Results"); run("Close");
 }

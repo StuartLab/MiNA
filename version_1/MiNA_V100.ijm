@@ -1,9 +1,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//      MACRO: Mitochondrial Network Analysis (MiNA) - Single Image           //
+//      MACRO: Mitochondrial Network Analysis (MiNA) - V1.0.0                 //
 //      AUTHOR: Andrew Valente                                                //
 //      EMAIL: valentaj94@gmail.com                                           //
-//      LAST EDITED: October 31st, 2016                                       //
+//      LAST EDITED: October 6th, 2017                                        //
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -85,7 +85,7 @@ macro "MiNA Single Image Action Tool - C059T3e16S" {
 	mitoArea = pow(pixelWidth, 2.0) * parseFloat(width) * parseFloat(height) * (Mean / parseFloat(max)) ;
 
     //Skeletonize the binary image and overlay it onto the original
-	run("Skeletonize (2D/3D)");
+	run("Skeletonize");
 	run("Red");
 	selectWindow("Original");
 	run("Add Image...", "image=TestSkeleton x=0 y=0 opacity=100 zero");
