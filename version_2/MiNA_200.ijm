@@ -18,7 +18,6 @@
 
 // GLOBAL VARIABLES ------------------------------------------------------------
 // Summary output arrays...
-var FILENAME = newArray();
 var FILEPATH = newArray();
 var FRAME = newArray();
 var TIMESTAMP = newArray();
@@ -35,6 +34,8 @@ var LENGTH_UNITS = newArray();
 var COVERAGE_UNITS = newArray();
 
 // Analyze Skeleton 2D/3D "Results" arrays...
+var RESULTS_FILEPATH = newArray();
+var RESULTS_FRAME = newArray();
 var RESULTS_BRANCHES = newArray();
 var RESULTS_JUNCTIONS = newArray();
 var RESULTS_END_POINTS = newArray();
@@ -46,6 +47,8 @@ var RESULTS_QUAD_POINTS = newArray();
 var RESULTS_MAX_LENGTH = newArray();
 
 // Analyze Skeleton 2D/3D "Branch Information" (BI) arrays...
+var BI_FILEPATH = newArray();
+var BI_FRAME = newArray();
 var BI_SKELETON_ID = newArray();
 var BI_BRANCH_LENGTH = newArray();
 var BI_V1X = newArray();
@@ -63,29 +66,183 @@ var BI_AVERAGE_INTENSITY = newArray();
 var THRESHOLD_METHOD = "Otsu";
 var PREPROCESSING_MACRO = "None";
 
-// Session SETUP -----------------------------------------------------------
-macro "MiNA - Session Setup" {
-
-}
-
 // PREPROCESSING MACRO ---------------------------------------------------------
-macro "MiNA - Preprocessing Helper" {
-
-}
-
 // SINGLE IMAGE ANALYSIS MACRO -------------------------------------------------
-macro "MiNA - Single Image" {
+macro "MiNA - Analyze Mitochondrial Morphology" {
 
-}
+    // Run some checks
+    if (nImages < 1) {
+        showMessage("Mina Warning!", "No images are open. Open an image first!");
+        exit();
+    }
 
-// BATCH PROCESS FOLDER --------------------------------------------------------
-macro "MiNA - Process Folder" {
+    // Initial data records for deleting rejected records later...
+    summaryRows = lengthOf(FILEPATH);
+    resultsRows = lengthOf(RESULTS_FILEPATH);
+    BIRows = lengthOf(BI_FILEPATH);
+
+    // Get general information about the image being processed
+    title = getTitle();
+    getDimensions(width, height, channels, slices, frames);
+    getVoxelSize(width, height, depth, unit);
+
+    filepath = getInfo("image.directory") + '/' + getInfo("image.filename");
+
+    if (frames > 1) {
+        frameInterval = Stack.getFrameInterval();
+        Stack.getUnits(xUnits, yUnits, zUnits, timeUnits, valueUnits);
+    }
+    else {
+        frameInterval = 0.0;
+    }
+
+    // Process the image set one frame at a time, appending information to
+    // the global variables with each loop
+    for (f=1; f<=frames; f++) {
+
+        frame = 1;
+        timestamp = frameInterval * (f-1);
+
+        // Duplicate the stack, frame by frame if time series
+        if (frames > 1) {
+            run("Duplicate...", "title=COPY-" + toString(f) + " duplicate frames=" + toString(f));
+        }
+        else {
+            run("Duplicate...", "title=COPY-" + toString(f) + " duplicate");
+        }
+        im = "COPY-" + toString(f);
+        selectWindow(im);
+        run("Grays");
+
+        // Create a binary copy.
+        selectWindow(im);
+        run("Duplicate...", "title=binary duplicate");
+        selectWindow("binary");
+        run("Make Binary", "method=" + THRESHOLD_METHOD + " background=Dark black");
+        run("Magenta");
+
+        // Calculate the mitochondrial footprint/volume (coverage)
+        getStatistics(imArea, imMean);
+
+
+        // Create a skeletonized copy.
+        selectWindow("binary");
+        run("Duplicate...", "title=skeletonized duplicate");
+        selectWindow("skeletonized")
+        run("Skeletonize (2D/3D)");
+        run("Green");
+
+        // Analyze the skeletonized copy
+
+    }
 
 }
 
 // RESULTS VIEWER --------------------------------------------------------------
+// Displays all of the results in tables which can be saved to file.
 macro "MiNA - Results Viewer" {
 
+    // Display summary statistics
+    Array.show("Summary Information",
+                FILEPATH,
+                FRAME,
+                TIMESTAMP,
+                INDIVIDUALS,
+                NETWORKS,
+                MEAN_BRANCH_LENGTH,
+                MEDIAN_BRANCH_LENGTH,
+                SD_BRANCH_LENGTH,
+                MEAN_BRANCHES,
+                MEDIAN_BRANCHES,
+                SD_BRANCHES,
+                MITO_COVERAGE,
+                LENGTH_UNITS,
+                COVERAGE_UNITS);
+
+    // Display AnalyzeSkeleton Results Table Output
+    Array.show("Results",
+                RESULTS_FILEPATH,
+                RESULTS_FRAME,
+                RESULTS_BRANCHES,
+                RESULTS_JUNCTIONS,
+                RESULTS_END_POINTS,
+                RESULTS_JUNCTION_VOXELS,
+                RESULTS_SLAB_VOXELS,
+                RESULTS_MEAN_LENGTH,
+                RESULTS_TRIPLE_POINTS,
+                RESULTS_QUAD_POINTS,
+                RESULTS_MAX_LENGTH);
+
+    // Display AnalyzeSkeleton Branch Information output
+    Array.show("Branch Information",
+                BI_FILEPATH,
+                BI_FRAME,
+                BI_SKELETON_ID,
+                BI_BRANCH_LENGTH,
+                BI_V1X,
+                BI_V1Y,
+                BI_V1Z,
+                BI_V2X,
+                BI_V2Y,
+                BI_V2Z,
+                BI_EUCLIDEAN,
+                BI_RUNNING_AVERAGE,
+                BI_INNER_THIRD,
+                BI_AVERAGE_INTENSITY);
+
+}
+
+// Resets all global variables to their initial state.
+macro "MiNA - Clear Tables and Reset" {
+
+    // Summary output arrays...
+    FILEPATH = newArray();
+    FRAME = newArray();
+    TIMESTAMP = newArray();
+    INDIVIDUALS = newArray();
+    NETWORKS = newArray();
+    MEAN_BRANCH_LENGTH = newArray();
+    MEDIAN_BRANCH_LENGTH = newArray();
+    SD_BRANCH_LENGTH = newArray();
+    MEAN_BRANCHES = newArray();
+    MEDIAN_BRANCHES = newArray();
+    SD_BRANCHES = newArray();
+    MITO_COVERAGE = newArray();
+    LENGTH_UNITS = newArray();
+    COVERAGE_UNITS = newArray();
+
+    // Analyze Skeleton 2D/3D "Results" arrays...
+    RESULTS_FILEPATH = newArray();
+    RESULTS_FRAME = newArray();
+    RESULTS_BRANCHES = newArray();
+    RESULTS_JUNCTIONS = newArray();
+    RESULTS_END_POINTS = newArray();
+    RESULTS_JUNCTION_VOXELS = newArray();
+    RESULTS_SLAB_VOXELS = newArray();
+    RESULTS_MEAN_LENGTH = newArray();
+    RESULTS_TRIPLE_POINTS = newArray();
+    RESULTS_QUAD_POINTS = newArray();
+    RESULTS_MAX_LENGTH = newArray();
+
+    // Analyze Skeleton 2D/3D "Branch Information" (BI) arrays...
+    BI_FILEPATH = newArray();
+    BI_FRAME = newArray();
+    BI_SKELETON_ID = newArray();
+    BI_BRANCH_LENGTH = newArray();
+    BI_V1X = newArray();
+    BI_V1Y = newArray();
+    BI_V1Z = newArray();
+    BI_V2X = newArray();
+    BI_V2Y = newArray();
+    BI_V2Z = newArray();
+    BI_EUCLIDEAN = newArray();
+    BI_RUNNING_AVERAGE = newArray();
+    BI_INNER_THIRD = newArray();
+    BI_AVERAGE_INTENSITY = newArray();
+
+    // Settings...
+    THRESHOLD_METHOD = "Otsu";
+    PREPROCESSING_MACRO = "None";
 }
 
 // SUBROUTINES -----------------------------------------------------------------
@@ -211,80 +368,4 @@ function sd(data) {
 	}
 	std = sqrt(sse);
 	return(std);
-}
-
-/*
-*   Analyze mitochondrial network morphology. Operates on a single image or
-*   stack. For time series analysis, the function is called on each frame.
-*/
-function analyzeMitos() {
-
-    // Check that an image is open.
-    if (nImages == 0) {
-        showMessage("No images are open.");
-        exit();
-    }
-
-    // Enter silent execution.
-    setBatchMode(true);
-
-    // Create copies to work on. A copy is made for the original, which results
-    // are overlaid upon and one that will be binarized. From the binary, an
-    // additional copy will be made. That is done later to reduce processing
-    // overhead.
-    run("Duplicate...", "title=Original");
-    selectWindow("Original");
-    run("Duplicate...", "title=Binarized");
-
-    selectWindow("Original");
-    run("RGB");
-
-    selectWindow("Binarized");
-    run("8-bit");
-
-    // Binarize the stack. Various schemes can be used. Otsu is recommended.
-    run("Make Binary", "method=" + THRESHOLD_METHOD + " background=Dark");
-    run("Cyan");
-
-    // Duplicate the binary for skeletonizing.
-    run("Duplicate...", "title=Skeleton");
-    run("Skeletonize (2D/3D)");
-    run("Magenta");
-
-    // Overlay it and check
-    selectWindow("Original");
-    run("Add Image...", "image=Binary x=0 y=0 opacity=50 zero");
-    run("Add Image...", "image=Skeleton x=0 y=0 opacity=100 zero");
-
-    setBatchMode("exit and display")
-
-    Dialog.create("Quality Control");
-    Dialog.addCheckbox("Is the binary and skeleton are faithful?.", true);
-    Dialog.show();
-    qualityCheck = Dialog.getCheckbox();
-
-    // If the quality is not good enough close the duplicates and exit.
-    if (qualityCheck == false) {
-        selectWindow("Original");
-        close();
-        selectWindow("Binary");
-        close();
-        selectWindow("Skeleton");
-        close();
-        exit("Analysis aborted.");
-    }
-
-    // Analyze the skeleton
-    run("Analyze Skeleton (2D/3D)", "prune=none show");
-    selectWindow("Tagged skeleton");
-    close();
-
-    //TODO: Keep it goin'!
-    // Grab the resulting arrays
-    selectWindow("Results");
-    rows = nResults;
-    for (i=0; i<rows; i++) {
-        getResult("# Branches", i);
-    }
-    selectWindow("Results"); run("Close");
 }
