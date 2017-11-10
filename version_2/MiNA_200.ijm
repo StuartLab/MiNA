@@ -60,7 +60,12 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
         exit();
     }
 
-    // Enter the batch mode
+    // If there is a preprocessing script, run that first
+    if (PREPROCESSING_MACRO != "None" && File.exists(PREPROCESSING_MACRO) == 1) {
+        runMacro(PREPROCESSING_MACRO);
+    }
+
+    // Enter background execution
     setBatchMode(true);
 
     // Get general information about the image being processed
@@ -71,6 +76,9 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
     filepath = getInfo("image.directory") + '/' + getInfo("image.filename");
 
     if (frames > 1) {
+        failedFrames = newArray();
+        binaryConcatenator = "  title=BINARY open";
+        skeletonConcatenator = "  title=SKELETON open";
         frameInterval = Stack.getFrameInterval();
         Stack.getUnits(xUnits, yUnits, zUnits, timeUnits, valueUnits);
     }
@@ -82,6 +90,7 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
     // the global variables with each loop
     for (f=1; f<=frames; f++) {
 
+        selectWindow(title);
         timestamp = frameInterval * (f-1);
 
         // Duplicate the stack, frame by frame if time series
@@ -91,32 +100,32 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
         else {
             run("Duplicate...", "title=COPY-" + toString(f) + " duplicate");
         }
-        im = "COPY-" + toString(f);
-        selectWindow(im);
-        run("Grays");
 
         // Create a binary copy.
-        selectWindow(im);
-        run("Duplicate...", "title=binary duplicate");
-        selectWindow("binary");
-        run("Make Binary", "method=" + THRESHOLD_METHOD + " background=Dark black");
+        selectWindow("COPY-"+toString(f));
+        run("8-bit");
+        run("Duplicate...", "title=binary-" + toString(f) + " duplicate");
+        selectWindow("binary-" + toString(f));
+        run("Make Binary", "method=" + THRESHOLD_METHOD + " background=Dark");
         run("Magenta");
 
         // Calculate the mitochondrial footprint/volume (coverage)
+        // TODO: Place this information somewhere useful! Ensure it fetches the
+        //       volume for 3D stacks.
         getStatistics(imArea, imMean);
 
 
         // Create a skeletonized copy.
-        selectWindow("binary");
-        run("Duplicate...", "title=skeletonized duplicate");
-        selectWindow("skeletonized");
+        selectWindow("binary-"+toString(f));
+        run("Duplicate...", "title=skeleton-" + toString(f) + " duplicate");
+        selectWindow("skeleton-"+toString(f));
         run("Skeletonize (2D/3D)");
         run("Green");
 
         // Analyze the skeletonized copy
         run("Analyze Skeleton (2D/3D)", "prune=none show");
         close("Tagged skeleton");
-        close(im);
+        close("COPY-" + toString(f));
 
         // Harvest all the information from the tables and close them.
         // Results Table...
@@ -137,61 +146,94 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
         run("Close");
 
         // Branch Information...
-        IJ.renameResults("Branch information", "Results");
-        selectWindow("Results");
-        for (i=0; i<nResults; i++) {
-            BI_FILEPATH = Array.concat(BI_FILEPATH, filepath);
-            BI_FRAME = Array.concat(BI_FRAME, f);
-            BI_SKELETON_ID = Array.concat(BI_SKELETON_ID, getResult("Skeleton ID", i));
-            BI_BRANCH_LENGTH = Array.concat(BI_BRANCH_LENGTH, getResult("Branch length", i));
-            BI_V1X = Array.concat(BI_V1X, getResult("V1 x",i));
-            BI_V1Y = Array.concat(BI_V1Y, getResult("V1 y",i));
-            BI_V1Z = Array.concat(BI_V1Z, getResult("V1 z",i));
-            BI_V2X = Array.concat(BI_V2X, getResult("V2 x",i));
-            BI_V2Y = Array.concat(BI_V2Y, getResult("V2 y",i));
-            BI_V2Z = Array.concat(BI_V2Z, getResult("V2 z",i));
-            BI_EUCLIDEAN = Array.concat(BI_EUCLIDEAN, getResult("Euclidean distance",i));
-            BI_RUNNING_AVERAGE = Array.concat(BI_RUNNING_AVERAGE, getResult("running average length",i));
-            BI_INNER_THIRD = Array.concat(BI_INNER_THIRD, getResult("average intensity (inner 3rd)", i));
-            BI_AVERAGE_INTENSITY = Array.concat(BI_AVERAGE_INTENSITY, getResult("average intensity", i));
-        }
-        run("Close");
-
-        // Overlay everything and delete the extra copies...
-        // You have to cycle through any slices that exist after setting the
-        // frame first if they exist
-        selectWindow(title);
-        if (frames > 1) {
-            Stack.setFrame(f);
-        }
-        print("Frame: " + toString(f));
-        print("Slices: " + toString(slices));
-        for (s=1; s<=slices; s++) {
-            // Set the slice...
-            if (slices > 1) {
-                selectWindow("binary");
-                setSlice(s);
-                selectWindow("skeletonized");
-                setSlice(s);
-                selectWindow(title);
+        // I haven't figured this out, but sometimes the program will abort with
+        // no "Branch information" window being found and there will be a window.
+        // I have attributed this to either some sort of a race condition, or
+        // insconsistent naming of the window. As such, I will now check it
+        // exists and if it doesn't, we skip this and warn later.
+        windowTitles = getList("window.titles");
+        exists=false;
+        for (i=0; i<lengthOf(windowTitles); i++) {
+            if (windowTitles[i] == "Branch information") {
+                exists=true;
             }
+            else {
+                continue;
+            }
+        }
+        if (exists==true) {
+            IJ.renameResults("Branch information", "Results");
+            selectWindow("Results");
+            for (i=0; i<nResults; i++) {
+                BI_FILEPATH = Array.concat(BI_FILEPATH, filepath);
+                BI_FRAME = Array.concat(BI_FRAME, f);
+                BI_SKELETON_ID = Array.concat(BI_SKELETON_ID, getResult("Skeleton ID", i));
+                BI_BRANCH_LENGTH = Array.concat(BI_BRANCH_LENGTH, getResult("Branch length", i));
+                BI_V1X = Array.concat(BI_V1X, getResult("V1 x",i));
+                BI_V1Y = Array.concat(BI_V1Y, getResult("V1 y",i));
+                BI_V1Z = Array.concat(BI_V1Z, getResult("V1 z",i));
+                BI_V2X = Array.concat(BI_V2X, getResult("V2 x",i));
+                BI_V2Y = Array.concat(BI_V2Y, getResult("V2 y",i));
+                BI_V2Z = Array.concat(BI_V2Z, getResult("V2 z",i));
+                BI_EUCLIDEAN = Array.concat(BI_EUCLIDEAN, getResult("Euclidean distance",i));
+                BI_RUNNING_AVERAGE = Array.concat(BI_RUNNING_AVERAGE, getResult("running average length",i));
+                BI_INNER_THIRD = Array.concat(BI_INNER_THIRD, getResult("average intensity (inner 3rd)", i));
+                BI_AVERAGE_INTENSITY = Array.concat(BI_AVERAGE_INTENSITY, getResult("average intensity", i));
+            }
+            run("Close");
 
-            // Select the original frame and overlay
-            selectWindow(title);
-            run("Add Image...", "image=binary x=0 y=0 opacity=25 zero");
-            selectWindow("binary");
-            run("Find Edges", "slice");
-            selectWindow(title);
-            run("Add Image...", "image=binary x=0 y=0 opacity=100 zero");
-            run("Add Image...", "image=skeletonized x=0 y=0 opacity=100 zero");
+            // Make the binary a bit "transparent"...
+            selectWindow("binary-" + toString(f));
+            run("Divide...", "value=4.000 stack");
+
+        }
+        else {
+            failedFrames = Array.concat(failedFrames, f);
         }
 
-        // Close everything we no longer need
-        close("binary");
-        close("skeletonized");
+        // Merge the time series data
+        if (frames > 1) {
+            binaryConcatenator = binaryConcatenator + " image" + toString(f) + "=binary-" + toString(f);
+        }
+        if (frames > 1) {
+            skeletonConcatenator = skeletonConcatenator + " image" + toString(f) + "=skeleton-" + toString(f);
+        }
+
+        // Update the user with a progress bar
+        showProgress(f,frames);
     }
 
-    // Exit batch mode...
+    // Create a time series from the images/stack
+    if (frames > 1) {
+
+        // Exclude other images
+        binaryConcatenator = binaryConcatenator + " image" + toString(frames+1) + "=[-- None --]";
+        binaryConcatenator = binaryConcatenator + " image" + toString(frames+1) + "=[-- None --]";
+
+        // Make a stack for each channel
+        run("Concatenate...", binaryConcatenator);
+        run("Concatenate...", skeletonConcatenator);
+
+        //Merge threm together with a copy of the original data
+        selectWindow(title);
+        run("Duplicate...", "title=COPY duplicate");
+        selectWindow("COPY");
+        run("8-bit");
+        run("Grays");
+        run("Merge Channels...", "c1=COPY c2=BINARY c3=SKELETON create");
+    }
+
+    // For non time series, just merge 'em
+    else {
+        selectWindow(title);
+        run("Duplicate...", "title=COPY duplicate");
+        selectWindow("COPY");
+        run("8-bit");
+        run("Grays");
+        run("Merge Channels...", "c1=COPY c2=binary-1 c3=skeleton-1 create");
+    }
+
+    //Display the output stack
     setBatchMode("exit and display");
 
 }
@@ -230,6 +272,12 @@ macro "MiNA - Results Viewer" {
                 BI_RUNNING_AVERAGE,
                 BI_INNER_THIRD,
                 BI_AVERAGE_INTENSITY);
+
+    // Print out any failed frames
+    print("Failed Frames:");
+    for (i=0; i<lengthOf(failedFrames); i++) {
+        print("Frame #" + toString(failedFrames[i]));
+    }
 }
 
 // CLEAR RESULTS ---------------------------------------------------------------
@@ -277,8 +325,8 @@ macro "MiNA - Settings Dialog" {
 
     // Settings GUI
     Dialog.create("MiNA - Settings Dialog");
-    Dialog.addChoice("Thresholding Algorithm: ", thresholdingMethods);
-    Dialog.addString("Preprocessing Macro: ", "NONE");
+    Dialog.addChoice("Thresholding Algorithm: ", thresholdingMethods, THRESHOLD_METHOD);
+    Dialog.addString("Preprocessing Macro: ", PREPROCESSING_MACRO);
     Dialog.show()
 
     THRESHOLD_METHOD = Dialog.getChoice();
