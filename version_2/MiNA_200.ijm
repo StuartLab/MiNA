@@ -17,24 +17,9 @@
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // GLOBAL VARIABLES ------------------------------------------------------------
-// Summary output arrays...
-var FILEPATH = newArray();
-var FRAME = newArray();
-var TIMESTAMP = newArray();
-var INDIVIDUALS = newArray();
-var NETWORKS = newArray();
-var MEAN_BRANCH_LENGTH = newArray();
-var MEDIAN_BRANCH_LENGTH = newArray();
-var SD_BRANCH_LENGTH = newArray();
-var MEAN_BRANCHES = newArray();
-var MEDIAN_BRANCHES = newArray();
-var SD_BRANCHES = newArray();
-var MITO_COVERAGE = newArray();
-var LENGTH_UNITS = newArray();
-var COVERAGE_UNITS = newArray();
-
 // Analyze Skeleton 2D/3D "Results" arrays...
 var RESULTS_FILEPATH = newArray();
+var RESULTS_TIMESTAMP = newArray();
 var RESULTS_FRAME = newArray();
 var RESULTS_BRANCHES = newArray();
 var RESULTS_JUNCTIONS = newArray();
@@ -66,7 +51,6 @@ var BI_AVERAGE_INTENSITY = newArray();
 var THRESHOLD_METHOD = "Otsu";
 var PREPROCESSING_MACRO = "None";
 
-// PREPROCESSING MACRO ---------------------------------------------------------
 // SINGLE IMAGE ANALYSIS MACRO -------------------------------------------------
 macro "MiNA - Analyze Mitochondrial Morphology" {
 
@@ -76,10 +60,8 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
         exit();
     }
 
-    // Initial data records for deleting rejected records later...
-    summaryRows = lengthOf(FILEPATH);
-    resultsRows = lengthOf(RESULTS_FILEPATH);
-    BIRows = lengthOf(BI_FILEPATH);
+    // Enter the batch mode
+    setBatchMode(true);
 
     // Get general information about the image being processed
     title = getTitle();
@@ -100,7 +82,6 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
     // the global variables with each loop
     for (f=1; f<=frames; f++) {
 
-        frame = 1;
         timestamp = frameInterval * (f-1);
 
         // Duplicate the stack, frame by frame if time series
@@ -128,36 +109,96 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
         // Create a skeletonized copy.
         selectWindow("binary");
         run("Duplicate...", "title=skeletonized duplicate");
-        selectWindow("skeletonized")
+        selectWindow("skeletonized");
         run("Skeletonize (2D/3D)");
         run("Green");
 
         // Analyze the skeletonized copy
+        run("Analyze Skeleton (2D/3D)", "prune=none show");
+        close("Tagged skeleton");
+        close(im);
 
+        // Harvest all the information from the tables and close them.
+        // Results Table...
+        selectWindow("Results");
+        for (i=0; i<nResults; i++) {
+            RESULTS_FILEPATH = Array.concat(RESULTS_FILEPATH, filepath);
+            RESULTS_FRAME = Array.concat(RESULTS_FRAME, f);
+            RESULTS_BRANCHES = Array.concat(RESULTS_BRANCHES, getResult("# Branches",i));
+            RESULTS_JUNCTIONS = Array.concat(RESULTS_JUNCTIONS, getResult("# Junctions",i));
+            RESULTS_END_POINTS = Array.concat(RESULTS_END_POINTS, getResult("# End-point voxels",i));
+            RESULTS_JUNCTION_VOXELS = Array.concat(RESULTS_JUNCTION_VOXELS, getResult("# Junction voxels",i));
+            RESULTS_SLAB_VOXELS = Array.concat(RESULTS_SLAB_VOXELS, getResult("#Slab voxels",i));
+            RESULTS_MEAN_LENGTH = Array.concat(RESULTS_MEAN_LENGTH, getResult("Average Branch Length",i));
+            RESULTS_TRIPLE_POINTS = Array.concat(RESULTS_TRIPLE_POINTS, getResult("# Triple points",i));
+            RESULTS_QUAD_POINTS = Array.concat(RESULTS_QUAD_POINTS, getResult("# Quadruple points",i));
+            RESULTS_MAX_LENGTH = Array.concat(RESULTS_MAX_LENGTH, getResult("Branch information",i));
+        }
+        run("Close");
+
+        // Branch Information...
+        IJ.renameResults("Branch information", "Results");
+        selectWindow("Results");
+        for (i=0; i<nResults; i++) {
+            BI_FILEPATH = Array.concat(BI_FILEPATH, filepath);
+            BI_FRAME = Array.concat(BI_FRAME, f);
+            BI_SKELETON_ID = Array.concat(BI_SKELETON_ID, getResult("Skeleton ID", i));
+            BI_BRANCH_LENGTH = Array.concat(BI_BRANCH_LENGTH, getResult("Branch length", i));
+            BI_V1X = Array.concat(BI_V1X, getResult("V1 x",i));
+            BI_V1Y = Array.concat(BI_V1Y, getResult("V1 y",i));
+            BI_V1Z = Array.concat(BI_V1Z, getResult("V1 z",i));
+            BI_V2X = Array.concat(BI_V2X, getResult("V2 x",i));
+            BI_V2Y = Array.concat(BI_V2Y, getResult("V2 y",i));
+            BI_V2Z = Array.concat(BI_V2Z, getResult("V2 z",i));
+            BI_EUCLIDEAN = Array.concat(BI_EUCLIDEAN, getResult("Euclidean distance",i));
+            BI_RUNNING_AVERAGE = Array.concat(BI_RUNNING_AVERAGE, getResult("running average length",i));
+            BI_INNER_THIRD = Array.concat(BI_INNER_THIRD, getResult("average intensity (inner 3rd)", i));
+            BI_AVERAGE_INTENSITY = Array.concat(BI_AVERAGE_INTENSITY, getResult("average intensity", i));
+        }
+        run("Close");
+
+        // Overlay everything and delete the extra copies...
+        // You have to cycle through any slices that exist after setting the
+        // frame first if they exist
+        selectWindow(title);
+        if (frames > 1) {
+            Stack.setFrame(f);
+        }
+        print("Frame: " + toString(f));
+        print("Slices: " + toString(slices));
+        for (s=1; s<=slices; s++) {
+            // Set the slice...
+            if (slices > 1) {
+                selectWindow("binary");
+                setSlice(s);
+                selectWindow("skeletonized");
+                setSlice(s);
+                selectWindow(title);
+            }
+
+            // Select the original frame and overlay
+            selectWindow(title);
+            run("Add Image...", "image=binary x=0 y=0 opacity=25 zero");
+            selectWindow("binary");
+            run("Find Edges", "slice");
+            selectWindow(title);
+            run("Add Image...", "image=binary x=0 y=0 opacity=100 zero");
+            run("Add Image...", "image=skeletonized x=0 y=0 opacity=100 zero");
+        }
+
+        // Close everything we no longer need
+        close("binary");
+        close("skeletonized");
     }
+
+    // Exit batch mode...
+    setBatchMode("exit and display");
 
 }
 
 // RESULTS VIEWER --------------------------------------------------------------
 // Displays all of the results in tables which can be saved to file.
 macro "MiNA - Results Viewer" {
-
-    // Display summary statistics
-    Array.show("Summary Information",
-                FILEPATH,
-                FRAME,
-                TIMESTAMP,
-                INDIVIDUALS,
-                NETWORKS,
-                MEAN_BRANCH_LENGTH,
-                MEDIAN_BRANCH_LENGTH,
-                SD_BRANCH_LENGTH,
-                MEAN_BRANCHES,
-                MEDIAN_BRANCHES,
-                SD_BRANCHES,
-                MITO_COVERAGE,
-                LENGTH_UNITS,
-                COVERAGE_UNITS);
 
     // Display AnalyzeSkeleton Results Table Output
     Array.show("Results",
@@ -189,27 +230,11 @@ macro "MiNA - Results Viewer" {
                 BI_RUNNING_AVERAGE,
                 BI_INNER_THIRD,
                 BI_AVERAGE_INTENSITY);
-
 }
 
+// CLEAR RESULTS ---------------------------------------------------------------
 // Resets all global variables to their initial state.
 macro "MiNA - Clear Tables and Reset" {
-
-    // Summary output arrays...
-    FILEPATH = newArray();
-    FRAME = newArray();
-    TIMESTAMP = newArray();
-    INDIVIDUALS = newArray();
-    NETWORKS = newArray();
-    MEAN_BRANCH_LENGTH = newArray();
-    MEDIAN_BRANCH_LENGTH = newArray();
-    SD_BRANCH_LENGTH = newArray();
-    MEAN_BRANCHES = newArray();
-    MEDIAN_BRANCHES = newArray();
-    SD_BRANCHES = newArray();
-    MITO_COVERAGE = newArray();
-    LENGTH_UNITS = newArray();
-    COVERAGE_UNITS = newArray();
 
     // Analyze Skeleton 2D/3D "Results" arrays...
     RESULTS_FILEPATH = newArray();
@@ -240,10 +265,26 @@ macro "MiNA - Clear Tables and Reset" {
     BI_INNER_THIRD = newArray();
     BI_AVERAGE_INTENSITY = newArray();
 
-    // Settings...
-    THRESHOLD_METHOD = "Otsu";
-    PREPROCESSING_MACRO = "None";
 }
+
+// SETTINGS --------------------------------------------------------------------
+// User interface that lets users specify various macro settings and provide a
+// path to a preprocessing script.
+macro "MiNA - Settings Dialog" {
+
+    // Get options
+    thresholdingMethods = getList("threshold.methods");
+
+    // Settings GUI
+    Dialog.create("MiNA - Settings Dialog");
+    Dialog.addChoice("Thresholding Algorithm: ", thresholdingMethods);
+    Dialog.addString("Preprocessing Macro: ", "NONE");
+    Dialog.show()
+
+    THRESHOLD_METHOD = Dialog.getChoice();
+    PREPROCESSING_MACRO = Dialog.getString();
+}
+
 
 // SUBROUTINES -----------------------------------------------------------------
 /*
