@@ -17,6 +17,20 @@
 //	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // GLOBAL VARIABLES ------------------------------------------------------------
+// Summary information...
+var INFO_FILEPATH = newArray();
+var INFO_FRAME = newArray();
+var INFO_INDIVIDUALS = newArray();
+var INFO_NETWORKS = newArray();
+var INFO_MEAN_LENGTH = newArray();
+var INFO_MEDIAN_LENGTH = newArray();
+var INFO_STDEV_LENGTH = newArray();
+var INFO_MEAN_SIZE = newArray();
+var INFO_MEDIAN_SIZE = newArray();
+var INFO_STDEV_SIZE = newArray();
+var INFO_FOOTPRINT = newArray();
+var INFO_FOOTPRINT_TYPE = newArray();
+
 // Analyze Skeleton 2D/3D "Results" arrays...
 var RESULTS_FILEPATH = newArray();
 var RESULTS_TIMESTAMP = newArray();
@@ -66,17 +80,16 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
     }
 
     // Enter background execution
-    setBatchMode(true);
+    // setBatchMode(true);
 
     // Get general information about the image being processed
     title = getTitle();
-    getDimensions(width, height, channels, slices, frames);
+    getDimensions(imWidth, imHeight, channels, slices, frames);
     getVoxelSize(width, height, depth, unit);
 
     filepath = getInfo("image.directory") + '/' + getInfo("image.filename");
 
     if (frames > 1) {
-        failedFrames = newArray();
         binaryConcatenator = "  title=BINARY open";
         skeletonConcatenator = "  title=SKELETON open";
         frameInterval = Stack.getFrameInterval();
@@ -93,9 +106,17 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
         selectWindow(title);
         timestamp = frameInterval * (f-1);
 
+        // Image information
+        INFO_FILEPATH = Array.concat(INFO_FILEPATH, filepath);
+        INFO_FRAME = Array.concat(INFO_FRAME, f);
+
         // Duplicate the stack, frame by frame if time series
-        if (frames > 1) {
+        if (frames > 1 && slices > 1) {
             run("Duplicate...", "title=COPY-" + toString(f) + " duplicate frames=" + toString(f));
+        }
+        if (frames > 1 && slices ==1) {
+            Stack.setFrame(f);
+            run("Duplicate...", "title=COPY-" + toString(f));
         }
         else {
             run("Duplicate...", "title=COPY-" + toString(f) + " duplicate");
@@ -110,10 +131,20 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
         run("Magenta");
 
         // Calculate the mitochondrial footprint/volume (coverage)
-        // TODO: Place this information somewhere useful! Ensure it fetches the
-        //       volume for 3D stacks.
-        getStatistics(imArea, imMean);
-
+        if (slices > 1) {
+            footprint = 0.0;
+            INFO_FOOTPRINT_TYPE = Array.concat(INFO_FOOTPRINT_TYPE, "Volume");
+            for (s=0; s<slices; s++) {
+                getStatistics(imArea, imMean);
+                footprint = footprint + (imMean/255) * (imWidth*width) * (imHeight*height) * depth;
+            }
+        }
+        else {
+            getStatistics(imArea, imMean);
+            INFO_FOOTPRINT_TYPE = Array.concat(INFO_FOOTPRINT_TYPE, "Area");
+            footprint = (imMean/255) * (imWidth*width) * (imHeight*height);
+        }
+        INFO_FOOTPRINT = Array.concat(INFO_FOOTPRINT, footprint);
 
         // Create a skeletonized copy.
         selectWindow("binary-"+toString(f));
@@ -129,11 +160,16 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
 
         // Harvest all the information from the tables and close them.
         // Results Table...
+        resultBranches = newArray();
+
         selectWindow("Results");
         for (i=0; i<nResults; i++) {
+            // Grab the array we need for counting individuals and networks
+            resultBranches = Array.concat(resultBranches, getResult("# Branches",i));
+
+            // Grab the rest
             RESULTS_FILEPATH = Array.concat(RESULTS_FILEPATH, filepath);
             RESULTS_FRAME = Array.concat(RESULTS_FRAME, f);
-            RESULTS_BRANCHES = Array.concat(RESULTS_BRANCHES, getResult("# Branches",i));
             RESULTS_JUNCTIONS = Array.concat(RESULTS_JUNCTIONS, getResult("# Junctions",i));
             RESULTS_END_POINTS = Array.concat(RESULTS_END_POINTS, getResult("# End-point voxels",i));
             RESULTS_JUNCTION_VOXELS = Array.concat(RESULTS_JUNCTION_VOXELS, getResult("# Junction voxels",i));
@@ -143,6 +179,24 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
             RESULTS_QUAD_POINTS = Array.concat(RESULTS_QUAD_POINTS, getResult("# Quadruple points",i));
             RESULTS_MAX_LENGTH = Array.concat(RESULTS_MAX_LENGTH, getResult("Branch information",i));
         }
+
+        // Plop the result table branches into the global variable
+        RESULTS_BRANCHES = Array.concat(RESULTS_BRANCHES, resultBranches);
+
+        // Fill in the summary info depending on the branch information
+        INFO_INDIVIDUALS = Array.concat(INFO_INDIVIDUALS, countIndividuals(resultBranches));
+        INFO_NETWORKS = Array.concat(INFO_NETWORKS, countNetworks(resultBranches));
+
+        //Strip non networked branches
+    	networkBranchCounts = newArray(0);
+    	for (i=0; i<resultBranches.length; i++) {
+    		if (resultBranches[i]>1) {
+    			networkBranchCounts = Array.concat(networkBranchCounts, resultBranches[i]);
+    		}
+    	}
+        INFO_MEAN_SIZE = Array.concat(INFO_MEAN_SIZE, mean(networkBranchCounts));
+        INFO_MEDIAN_SIZE = Array.concat(INFO_MEDIAN_SIZE, median(networkBranchCounts));
+        INFO_STDEV_SIZE = Array.concat(INFO_STDEV_SIZE, sd(networkBranchCounts));
         run("Close");
 
         // Branch Information...
@@ -164,11 +218,12 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
         if (exists==true) {
             IJ.renameResults("Branch information", "Results");
             selectWindow("Results");
+            branchLengths = newArray();
             for (i=0; i<nResults; i++) {
                 BI_FILEPATH = Array.concat(BI_FILEPATH, filepath);
                 BI_FRAME = Array.concat(BI_FRAME, f);
                 BI_SKELETON_ID = Array.concat(BI_SKELETON_ID, getResult("Skeleton ID", i));
-                BI_BRANCH_LENGTH = Array.concat(BI_BRANCH_LENGTH, getResult("Branch length", i));
+                branchLengths = Array.concat(branchLengths, getResult("Branch length", i));
                 BI_V1X = Array.concat(BI_V1X, getResult("V1 x",i));
                 BI_V1Y = Array.concat(BI_V1Y, getResult("V1 y",i));
                 BI_V1Z = Array.concat(BI_V1Z, getResult("V1 z",i));
@@ -180,6 +235,14 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
                 BI_INNER_THIRD = Array.concat(BI_INNER_THIRD, getResult("average intensity (inner 3rd)", i));
                 BI_AVERAGE_INTENSITY = Array.concat(BI_AVERAGE_INTENSITY, getResult("average intensity", i));
             }
+
+            // Add the branch length information to the global variables
+            BI_BRANCH_LENGTH = Array.concat(BI_BRANCH_LENGTH, branchLengths);
+
+            // Fill in the summary info where we can using the branch lengths
+            INFO_MEAN_LENGTH = Array.concat(INFO_MEAN_LENGTH, mean(branchLengths));
+            INFO_MEDIAN_LENGTH = Array.concat(INFO_MEDIAN_LENGTH, median(branchLengths));
+            INFO_STDEV_LENGTH = Array.concat(INFO_STDEV_LENGTH, sd(branchLengths));
             run("Close");
 
             // Make the binary a bit "transparent"...
@@ -187,9 +250,7 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
             run("Divide...", "value=4.000 stack");
 
         }
-        else {
-            failedFrames = Array.concat(failedFrames, f);
-        }
+        waitForUser;
 
         // Merge the time series data
         if (frames > 1) {
@@ -234,13 +295,29 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
     }
 
     //Display the output stack
-    setBatchMode("exit and display");
+    // setBatchMode("exit and display");
 
 }
 
 // RESULTS VIEWER --------------------------------------------------------------
 // Displays all of the results in tables which can be saved to file.
 macro "MiNA - Results Viewer" {
+
+    // Additional Information (pulled from the binary)
+    Array.show("Additional Parameters",
+                INFO_FILEPATH,
+                INFO_FRAME,
+                INFO_INDIVIDUALS,
+                INFO_NETWORKS,
+                INFO_MEAN_LENGTH,
+                INFO_MEDIAN_LENGTH,
+                INFO_STDEV_LENGTH,
+                INFO_MEAN_SIZE,
+                INFO_MEDIAN_SIZE,
+                INFO_STDEV_SIZE,
+                INFO_FOOTPRINT,
+                INFO_FOOTPRINT_TYPE);
+
 
     // Display AnalyzeSkeleton Results Table Output
     Array.show("Results",
@@ -273,16 +350,25 @@ macro "MiNA - Results Viewer" {
                 BI_INNER_THIRD,
                 BI_AVERAGE_INTENSITY);
 
-    // Print out any failed frames
-    print("Failed Frames:");
-    for (i=0; i<lengthOf(failedFrames); i++) {
-        print("Frame #" + toString(failedFrames[i]));
-    }
 }
 
 // CLEAR RESULTS ---------------------------------------------------------------
 // Resets all global variables to their initial state.
 macro "MiNA - Clear Tables and Reset" {
+
+    // Summary information table
+    INFO_FILEPATH = newArray();
+    INFO_FRAME = newArray();
+    INFO_INDIVIDUALS = newArray();
+    INFO_NETWORKS = newArray();
+    INFO_MEAN_LENGTH = newArray();
+    INFO_MEDIAN_LENGTH = newArray();
+    INFO_STDEV_LENGTH = newArray();
+    INFO_MEAN_SIZE = newArray();
+    INFO_MEDIAN_SIZE = newArray();
+    INFO_STDEV_SIZE = newArray();
+    INFO_FOOTPRINT = newArray();
+    INFO_FOOTPRINT_TYPE = newArray();
 
     // Analyze Skeleton 2D/3D "Results" arrays...
     RESULTS_FILEPATH = newArray();
@@ -366,7 +452,7 @@ function countIndividuals(branchCounts) {
 *                             calculations.
 */
 function countNetworks(branchCounts) {
-	entries = data.length;
+	entries = branchCounts.length;
 	networks = 0.0;
 	for (i=0; i<entries; i++) {
 		if (branchCounts[i] > 1) {
@@ -453,7 +539,7 @@ function sd(data) {
 	u = mean(data);
 	sse = 0.0;
 	for (i=0; i<entries; i++) {
-		sse = sse + (pow((data[i] - u),2)/N);
+		sse = sse + (pow((data[i] - u),2.0)/N);
 	}
 	std = sqrt(sse);
 	return(std);

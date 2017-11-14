@@ -16,6 +16,7 @@ Currently the project has entered development of the second version of the tool.
 >_Provides an interface to altering the settings used by the "MiNA - Analyze" macros, such as binarization method, and whether or not to run a pre-processing script before analysis._
 
 ## MiNA Version 1
-
+MiNA < 2.0.0 macros are contained in the [version_1 folder](https://github.com/ScienceToolkit/MiNA/tree/master/version_1) along with their appropriate documentation. The macros were designed to be used on 2D images only. The macros are no longer being actively developed, though they are supported. As such, any bugs should be submitted using the issues tracker and fixes will be submitted in a timely fashion.
 
 ## MiNA Version 2
+_ __TODO__: Create brief description of the macros here as well as links to the documentation markdown document and license info. Both of these documents need to be produced still._
