@@ -522,7 +522,7 @@ function median(data) {
     	return(med);
     }
     else {
-        return();
+        return("");
     }
 }
 
