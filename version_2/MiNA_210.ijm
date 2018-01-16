@@ -81,7 +81,7 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
     }
 
     // Enter background execution
-    //setBatchMode(true);
+    setBatchMode(true);
 
     // Get general information about the image being processed
     title = getTitle();
@@ -299,7 +299,7 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
     }
 
     //Display the output stack
-    //setBatchMode("exit and display");
+    setBatchMode("exit and display");
 
 }
 
