@@ -132,7 +132,8 @@ macro "MiNA - Analyze Mitochondrial Morphology" {
         run("8-bit");
         run("Duplicate...", "title=binary-" + toString(f) + " duplicate");
         selectWindow("binary-" + toString(f));
-        run("Make Binary", "method=" + THRESHOLD_METHOD + " background=Dark");
+        setAutoThreshold(THRESHOLD_METHOD+" dark");
+        run("Make Binary", "background=Dark");
         run("Magenta");
 
         // Calculate the mitochondrial footprint/volume (coverage)
