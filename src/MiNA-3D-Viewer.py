@@ -1,10 +1,10 @@
-#@ ImagePlus(label="Binary Image: ", description="Output stack from MiNA macro set.") binImg
-#@ ImagePlus(label="Skeleton Image: ", description="Output stack from MiNA macro set.") skelImg
+#@ ImagePlus(label="Binary Image: ", description="Output stack from MiNA macro set.") imp
+#@ float(label="Point Size: ", description="Radius of the drawn points", value=1) pointSize
 #@ LogService logger
 
 ################################################################################
 #   Title: MiNA 3D Viewer
-#   Contact: valentaj94@gmail.com
+#   Author: ScienceToolkit
 ################################################################################
 
 #	This program is free software: you can redistribute it and/or modify
@@ -115,9 +115,11 @@ def MiNA_Render_3D(binary, skeleton):
     bin.setTransparency(0.5)
 
 if __name__=="__main__" or __name__=="__builtin__":
-    #TODO: Process focused image to duplicate the binary and skeleton of the
-    #      frame that is currently selected if time series, otherwise take the
-    #      only frame available...
-    
+
+    #Sort out the binImp and skelImp
+    # TODO: THis is not done
+
+    frame =
+
     # Render the scene
-    MiNA_Render_3D(binary=binImg, skeleton=skelImg)
+    MiNA_Render_3D(binary=binImp, skeleton=skelImp)
