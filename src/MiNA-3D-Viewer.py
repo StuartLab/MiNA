@@ -1,5 +1,6 @@
 #@ ImagePlus(label="Binary Image: ", description="Output stack from MiNA macro set.") imp
-#@ float(label="Point Size: ", description="Radius of the drawn points", value=1) pointSize
+#@ float(label="Point Size: ", description="Radius of the drawn points.", value=1) pointSize
+#@ float(label="Line Width: ", description="Width of lines representing the skeleton.", value=1) lineWidth
 #@ LogService logger
 
 ################################################################################
@@ -35,7 +36,7 @@ from sc.fiji.analyzeSkeleton import AnalyzeSkeleton_
 from sc.fiji.analyzeSkeleton import Edge
 from sc.fiji.analyzeSkeleton import Point
 
-def MiNA_Render_3D(binary, skeleton):
+def MiNA_Render_3D(binary, skeleton, pointsize=1.0, lineWidth=1.0):
     '''
     Render a 3D-Viewer visualization of a skeleton and associated binary.
 
@@ -76,7 +77,7 @@ def MiNA_Render_3D(binary, skeleton):
             (p.z * pixelDepth)))
 
     # add end-points to the universe as blue spheres
-    univ.addIcospheres(endPointList,Color3f(0,0,255), 2, 0.1, "End-points")
+    univ.addIcospheres(endPointList,Color3f(0,0,255), 2, pointSize, "End-points")
 
     # list of junction voxels
     junctions = skelResult.getListOfJunctionVoxels()
@@ -89,7 +90,7 @@ def MiNA_Render_3D(binary, skeleton):
             (p.z * pixelDepth)))
 
     # add junction voxels to the universe as magenta spheres
-    univ.addIcospheres(junctionList, Color3f(0,255,0), 2, 0.1, "Junctions")
+    univ.addIcospheres(junctionList, Color3f(0,255,0), 2, pointSize, "Junctions")
 
     for i in range(len(graph)):
 

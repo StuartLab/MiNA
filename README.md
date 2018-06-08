@@ -18,9 +18,8 @@ The project began as a result of extensive work with adherent mammalian cell cul
 
 :exclamation: __PLEASE READ THIS SECTION BEFORE USING THE MACROS__ :exclamation:
 
-Is this set of macros suitable for your data? MiNA relies fluorescence microscopy, binarized signals, and morphological skeletons to provide several parameters describing the mitochondrial morphology captured in a micrograph. These parameters can be helpful, but the user must ensure the analysis was accurate for their case before going further. It is important to understand the limitations of the analysis and where you may run into more or less accurate depictions of the true mitochondrial structure. This analysis aims to estimate topological relationships and mitochondrial dimensions, but can not necessarily report the absolute physical truth. How close to the physical truth the measurements lay will depends on how closely the data matches the assumptions being made.
+Is this set of macros suitable for your data? MiNA relies fluorescence microscopy, binarized signals, and morphological skeletons to provide several parameters describing the mitochondrial morphology captured in a micrograph. These parameters can be helpful, but the user must ensure the analysis was accurate for their case before going further. It is important to understand the limitations of the analysis and where you may run into more or less accurate depictions of the true mitochondrial structure. This analysis aims to estimate topological relationships and mitochondrial dimensions, but its accuracy is primarily dependent on data being appropriate.
 
-### Assumptions
 The analysis makes a few assumptions regarding the shapes of mitochondria, the properties of the dataset, and the sample preparation itself. While it is unlikely to fully meet all requirements completely, the closer the data is to the requirements, the more faithful the  analysis will be. The assumptions are:
 * [x] Physically independent mitochondria are resolved.
 * [x] Mitochondria are tube-like or ellipsoidal.
@@ -28,7 +27,7 @@ The analysis makes a few assumptions regarding the shapes of mitochondria, the p
 * [x] Signal is homegenous within the bounds of the mitochondria
 * [x] Signal of label is clearly detectable at the voxel/pixel level.
 
-:construction: TODO: Complete this section... :construction:.
+If the images are noisy, blurry, at too low of a magnification, then the analysis will not provide faithful results. The sample characteristics are also important. MiNA is suitable for non-aggregated, filamentous mitochondrial morphologies. Tightly packed mitochondria, non-tubular or non-spherical morphologies, and uneven labelling of the mitochondria can all lead to eroneous analysis. It is the vital the user thoroughly test their analysis to ensure it is a faithful representation of the mitochondrial morphologies.
 
 ## Recent Changes
 Users will notice that the user experience of the macros has changed from the original published version. The processing method's are still the same, but additional parameters and options have been included. The macro has also been extended to operate on 2D images, 3D stacks, and timeseries data (2D and 3D). The setup options, output paramaters, and work flow are all described in the background section of the README file.
