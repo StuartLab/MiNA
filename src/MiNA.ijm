@@ -85,10 +85,18 @@ macro "MiNA - Analyze Morphology" {
 	mitoArea = pow(pixelWidth, 2.0) * parseFloat(width) * parseFloat(height) * (Mean / parseFloat(max)) ;
 
     //Skeletonize the binary image and overlay it onto the original
+    selectWindow("TestSkeleton");
 	run("Skeletonize (2D/3D)");
 	run("Green");
 	selectWindow("Original");
 	run("Add Image...", "image=TestSkeleton x=0 y=0 opacity=100 zero");
+
+    //Create an outline and overlay it...
+    selectWindow("Outline");
+    run("Find Edges");
+    run("Magenta");
+    selectWindow("Original");
+    run("Add Image...", "image=Outline x=0 y=0 opacity=100 zero");
 
 	//Add a scale bar to it.
 	size = toString(round(0.25*parseFloat(width)*parseFloat(pixelWidth)));
@@ -103,6 +111,7 @@ macro "MiNA - Analyze Morphology" {
 	showStatus("MiNA: Processing skeleton...");
 	selectWindow("TestSkeleton");
 	run("Analyze Skeleton (2D/3D)", "prune=none show display");
+    close("Outline");
 	close("Tagged skeleton");
 	close("TestSkeleton");
 	close("TestSkeleton-labeled-skeletons");
