@@ -122,6 +122,6 @@ Once the analysis has begun, a pop up will appear after a skeleton is generated 
 ![MiNA dialog screenshot.](/doc/skeleton_quality_control.png)
 
 ### Working with the Results
-If the user clicks OK and proceeds, the skeleton will be analyzed using the [AnalyzeSkeleton plugin](![MiNA dialog screenshot.](/doc/MiNA_dialog.png) and some additional code in the macro itself. The results of the analysis are summarized into a number of parameters and displayed in a table as shown below.
+If the user clicks OK and proceeds, the skeleton will be analyzed using the  [AnalyzeSkeleton plugin](https://imagej.net/AnalyzeSkeleton) and some additional code in the macro itself. The results of the analysis are summarized into a number of parameters and displayed in a table as shown below.
 
 ![MiNA dialog screenshot.](/doc/results_dialog.png)
