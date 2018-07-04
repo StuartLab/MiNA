@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
-//      MACRO: Mitochondrial Network Analysis (MiNA) - V1.1.0                 //
+//      MACRO: Mitochondrial Network Analysis (MiNA) - V2.0.0                 //
 //      AUTHOR: Andrew Valente                                                //
 //      EMAIL: valentaj94@gmail.com                                           //
 //      LAST EDITED: October 6th,2017                                         //

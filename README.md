@@ -117,7 +117,7 @@ To run the analysis simple navigate to the macro through Plugins &rarr; Macros &
 In the future, preprocessing will be separated from running and fully extensible to allow for running custom scripts as part of the analysis. It is being separated because what works best can be highly variable and it is not sensible to try and incorporate every option users may want in MiNA itself. To proceed with the options selected, clock OK. This will begin the analysis.
 
 ### Checking for Errors
-Once the analysis has begun, a pop up will appear after a skeleton is generated and overlaid upon the preprocessed image. A second pop up dialog will ask the user if the skeleton is suitable. At this point you will want to look for poorly resolved areas that may be erroneously connected by the skeleton, or artificial breaks where there is inhomegenous fluorescent intensity. If everything looks good, you can proceed and click OK. The dialog is shown below.
+Once the analysis has begun, a pop up will appear after a skeleton is generated and overlaid upon the preprocessed image. Green is the skeleton and magenta is the  outline of the binarized area. A second pop up dialog will ask the user if the skeleton is suitable. At this point you will want to look for poorly resolved areas that may be erroneously connected by the skeleton, or artificial breaks where there is inhomegenous fluorescent intensity. If everything looks good, you can proceed and click OK. The dialog is shown below.
 
 ![MiNA dialog screenshot.](/doc/skeleton_quality_control.png)
 
