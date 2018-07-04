@@ -71,13 +71,14 @@ macro "MiNA - Analyze Morphology" {
 	//Preprocess image
 	preprocessing();
 
-	//Produce binary duplicate image for skeleton
+	//Produce binary duplicate image for skeleton and binary outline...
 	showStatus("MiNA: Producing test skeleton...");
 	run("Duplicate...", "title=TestSkeleton");
 	selectWindow("TestSkeleton");
 	run("32-bit");
 	run("Make Binary");
 	run("8-bit");
+    run("Duplicate...", "title=Outline");
 
     //Calculate the mitochondrial footprint
 	getStatistics(area, Mean, min, max);
@@ -85,7 +86,7 @@ macro "MiNA - Analyze Morphology" {
 
     //Skeletonize the binary image and overlay it onto the original
 	run("Skeletonize (2D/3D)");
-	run("Red");
+	run("Green");
 	selectWindow("Original");
 	run("Add Image...", "image=TestSkeleton x=0 y=0 opacity=100 zero");
 
