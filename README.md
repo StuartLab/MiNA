@@ -22,9 +22,9 @@ To give you an idea of what I am working on and what you will see next from MiNA
 - [x] Rewrite as IJ2 Jython parameterized script.
 - [x] Add an option for ridge detection.
 - [x] Extend for 3D analysis.
-- [ ] Extend for time series analysis. :construction: __IN PROGRESS__ :construction:
-- [ ] Extend for multiple ROI support. :construction: __IN PROGRESS__ :construction:
+- [ ] Extend for time series analysis. :construction: [<b>IN PROGRESS</b>]() :construction:
+- [ ] Extend for multiple ROI support. :construction: [<b>IN PROGRESS</b>]() :construction:
 - [ ] Incorporate functional analysis options.
 - [x] Concatenating consecutive outputs in a common table.
 - [x] Create a Fiji update site for the project.
-- [ ] Create a full manual and description as a wiki site on imagej.net. :construction: __IN PROGRESS__ :construction:
+- [ ] Create a full manual and description as a wiki site on imagej.net. :construction: [<b>IN PROGRESS</b>]() :construction:
