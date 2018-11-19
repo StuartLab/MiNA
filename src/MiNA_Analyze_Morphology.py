@@ -1,10 +1,10 @@
 #@ ImagePlus imp
 #@ File(label="Pre-processor path:", value = "", required=False) preprocessor_path
 #@ File(label="Post-processing path:", required=False) postprocessor_path
-#@ String(label="Threshold method:", choices={"ij1", "li", "minimum", "otsu"}, value="otsu", description="Algorithm for determining the threshold level.") threshold_method
+#@ String(label = "Thresholding Op:", value="otsu", choices={"huang", "ij1", "intermodes", "isoData", "li", "maxEntropy", "maxLikelihood", "mean", "minError", "minimum", "moments", "otsu", "percentile", "renyiEntropy", "rosin", "shanbhag", "triangle", "yen"}) threshold_method
 #@ Boolean(label="Use ridge detection (2D only):", value=False) use_ridge_detection
-#@ BigInteger(label="Maximum threshold:", value=5, required=False) rd_max
-#@ BigInteger(label="Minimum threshold:", value=75, required=False) rd_min
+#@ BigInteger(label="Maximum threshold:", value=75, required=False) rd_max
+#@ BigInteger(label="Minimum threshold:", value=5, required=False) rd_min
 #@ BigInteger(label="Line width:", value=1, required=False) rd_width
 #@ BigInteger(label="Line length:", value=3, required=False) rd_length
 #@ String(label="User comment: ", value="") user_comment
@@ -58,20 +58,18 @@ def run(imp, preprocessor_path, postprocessor_path, threshold_method, user_comme
     "branch length mean" : float,
     "branch length median" : float,
     "branch length stdevp" : float,
-    "graph branches mean" : float,
-    "graph branches median" : float,
-    "graph branches stdevp" : float,
-    "user comment" : user_comment}
+    "network branches mean" : float,
+    "network branches median" : float,
+    "network branches stdevp" : float}
 
     output_order = ["image title",
     "mitochondrial footprint",
     "branch length mean",
     "branch length median",
     "branch length stdevp",
-    "graph branches mean",
-    "graph branches median",
-    "graph branches stdevp",
-    "user comment"]
+    "network branches mean",
+    "network branches median",
+    "network branches stdevp"]
 
     # Perform any preprocessing steps...
     status.showStatus("Preprocessing image...")
@@ -87,9 +85,11 @@ def run(imp, preprocessor_path, postprocessor_path, threshold_method, user_comme
     status.showStatus("Determining threshold level...")
     imp_title = imp.getTitle()
     slices = imp.getNSlices()
+    frames = imp.getNFrames()
     output_parameters["image title"] = imp_title
     imp_calibration = imp.getCalibration()
-    img = ImageJFunctions.wrap(imp)
+    imp_channel = Duplicator().run(imp, imp.getChannel(), imp.getChannel(), 1, slices, 1, frames)
+    img = ImageJFunctions.wrap(imp_channel)
 
     # Determine the threshold value if not manual...
     binary_img = ops.run("threshold.%s"%threshold_method, img)
@@ -140,24 +140,31 @@ def run(imp, preprocessor_path, postprocessor_path, threshold_method, user_comme
     output_parameters["branch length stdevp"] = eztables.statistical.stdevp(branch_lengths)
 
     branches = list(skel_result.getBranches())
-    output_parameters["graph branches mean"] = eztables.statistical.average(branches)
-    output_parameters["graph branches median"] = eztables.statistical.median(branches)
-    output_parameters["graph branches stdevp"] = eztables.statistical.stdevp(branches)
+    output_parameters["network branches mean"] = eztables.statistical.average(branches)
+    output_parameters["network branches median"] = eztables.statistical.median(branches)
+    output_parameters["network branches stdevp"] = eztables.statistical.stdevp(branches)
 
     # Create/append results to a ResultsTable...
     status.showStatus("Display results...")
     if "Mito Morphology" in list(WindowManager.getNonImageTitles()):
         rt = WindowManager.getWindow("Mito Morphology").getTextPanel().getOrCreateResultsTable()
-        rt.incrementCounter()
-        for key in output_order:
-            rt.addValue(key, str(output_parameters[key]))
-            rt.show("Mito Morphology")
     else:
         rt = ResultsTable()
-        rt.incrementCounter()
-        for key in output_order:
-            rt.addValue(key, str(output_parameters[key]))
-            rt.show("Mito Morphology")
+
+    rt.incrementCounter()
+    for key in output_order:
+        rt.addValue(key, str(output_parameters[key]))
+
+    # Add user comments intelligently
+    if user_comment != None and user_comment != "":
+        if "=" in user_comment:
+            comments = user_comment.split(",")
+            for comment in comments:
+                rt.addValue(comment.split("=")[0], comment.split("=")[1])
+        else:
+            rt.addValue("Comment", user_comment)
+
+    rt.show("Mito Morphology")
 
 	# Create overlays on the original ImagePlus and display them if 2D...
     if imp.getNSlices() == 1:
