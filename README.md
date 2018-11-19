@@ -21,6 +21,7 @@ To give you an idea of what I am working on and what you will see next from MiNA
 - [x] Complete the README file.
 - [x] Rewrite as IJ2 Jython parameterized script.
 - [x] Add an option for ridge detection.
+- [ ] Incorporate longest path summary statistics into the output metrics. :question:<b>TODO</b>:question:
 - [x] Extend for 3D analysis.
 - [ ] Extend for time series analysis. :question:<b>TODO</b>:question:
 - [ ] Extend for multiple ROI support. :construction: [<b>IN PROGRESS</b>](https://github.com/ScienceToolkit/MiNA/tree/multi-roi) :construction:
