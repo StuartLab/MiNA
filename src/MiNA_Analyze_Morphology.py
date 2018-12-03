@@ -58,6 +58,9 @@ def run(imp, preprocessor_path, postprocessor_path, threshold_method, user_comme
     "branch length mean" : float,
     "branch length median" : float,
     "branch length stdevp" : float,
+    "summed branch lengths mean" : float,
+    "summed branch lengths median" : float,
+    "summed branch lengths stdevp" : float,
     "network branches mean" : float,
     "network branches median" : float,
     "network branches stdevp" : float}
@@ -67,6 +70,9 @@ def run(imp, preprocessor_path, postprocessor_path, threshold_method, user_comme
     "branch length mean",
     "branch length median",
     "branch length stdevp",
+    "summed branch lengths mean",
+    "summed branch lengths median",
+    "summed branch lengths stdevp",
     "network branches mean",
     "network branches median",
     "network branches stdevp"]
@@ -128,16 +134,25 @@ def run(imp, preprocessor_path, postprocessor_path, threshold_method, user_comme
 
     status.showStatus("Computing graph based parameters...")
     branch_lengths = []
+    summed_lengths = []
     graphs = skel_result.getGraph()
 
     for graph in graphs:
+        summed_length = 0.0
         edges = graph.getEdges()
         for edge in edges:
-            branch_lengths.append(edge.getLength())
+            length = edge.getLength()
+            branch_lengths.append(length)
+            summed_length += length
+        summed_lengths.append(summed_length)
 
     output_parameters["branch length mean"] = eztables.statistical.average(branch_lengths)
     output_parameters["branch length median"] = eztables.statistical.median(branch_lengths)
     output_parameters["branch length stdevp"] = eztables.statistical.stdevp(branch_lengths)
+
+    output_parameters["summed branch lengths mean"] = eztables.statistical.average(summed_lengths)
+    output_parameters["summed branch lengths median"] = eztables.statistical.median(summed_lengths)
+    output_parameters["summed branch lengths stdevp"] = eztables.statistical.stdevp(summed_lengths)
 
     branches = list(skel_result.getBranches())
     output_parameters["network branches mean"] = eztables.statistical.average(branches)
@@ -168,23 +183,23 @@ def run(imp, preprocessor_path, postprocessor_path, threshold_method, user_comme
 
 	# Create overlays on the original ImagePlus and display them if 2D...
     if imp.getNSlices() == 1:
-    	status.showStatus("Generate overlays...")
-    	IJ.run(skeleton, "Green", "")
-    	IJ.run(binary, "Magenta", "")
+        status.showStatus("Generate overlays...")
+        IJ.run(skeleton, "Green", "")
+        IJ.run(binary, "Magenta", "")
 
-    	skeleton_ROI = ImageRoi(0,0,skeleton.getProcessor())
-    	skeleton_ROI.setZeroTransparent(True)
-    	skeleton_ROI.setOpacity(1.0)
-    	binary_ROI = ImageRoi(0,0,binary.getProcessor())
-    	binary_ROI.setZeroTransparent(True)
-    	binary_ROI.setOpacity(0.35)
+        skeleton_ROI = ImageRoi(0,0,skeleton.getProcessor())
+        skeleton_ROI.setZeroTransparent(True)
+        skeleton_ROI.setOpacity(1.0)
+        binary_ROI = ImageRoi(0,0,binary.getProcessor())
+        binary_ROI.setZeroTransparent(True)
+        binary_ROI.setOpacity(0.35)
 
-    	overlay = Overlay()
-    	overlay.add(binary_ROI)
-    	overlay.add(skeleton_ROI)
+        overlay = Overlay()
+        overlay.add(binary_ROI)
+        overlay.add(skeleton_ROI)
 
-    	imp.setOverlay(overlay)
-    	imp.updateAndDraw()
+        imp.setOverlay(overlay)
+        imp.updateAndDraw()
 
     # Generate a 3D model if a stack
     if imp.getNSlices() > 1:
@@ -222,14 +237,14 @@ def run(imp, preprocessor_path, postprocessor_path, threshold_method, user_comme
                 univ.addLineMesh(branch_points, Color3f(0.0, 255.0, 0.0), "branch-%s-%s"%(graph, edge), True)
 
     # Perform any postprocessing steps...
-	status.showStatus("Running postprocessing...")
+    status.showStatus("Running postprocessing...")
     if postprocessor_path != None:
-    	if postprocessor_path.exists():
+        if postprocessor_path.exists():
             postprocessor_thread = scripts.run(postprocessor_path, True)
             postprocessor_thread.get()
 
     else:
-		pass
+        pass
 
     status.showStatus("Done analysis!")
 
