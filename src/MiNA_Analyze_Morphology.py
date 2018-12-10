@@ -3,8 +3,8 @@
 #@ File(label="Post-processing path:", required=False) postprocessor_path
 #@ String(label = "Thresholding Op:", value="otsu", choices={"huang", "ij1", "intermodes", "isoData", "li", "maxEntropy", "maxLikelihood", "mean", "minError", "minimum", "moments", "otsu", "percentile", "renyiEntropy", "rosin", "shanbhag", "triangle", "yen"}) threshold_method
 #@ Boolean(label="Use ridge detection (2D only):", value=False) use_ridge_detection
-#@ BigInteger(label="Maximum threshold:", value=75, required=False) rd_max
-#@ BigInteger(label="Minimum threshold:", value=5, required=False) rd_min
+#@ BigInteger(label="High contrast:", value=75, required=False) rd_max
+#@ BigInteger(label="Low contrast:", value=5, required=False) rd_min
 #@ BigInteger(label="Line width:", value=1, required=False) rd_width
 #@ BigInteger(label="Line length:", value=3, required=False) rd_length
 #@ String(label="User comment: ", value="") user_comment
@@ -192,7 +192,7 @@ def run(imp, preprocessor_path, postprocessor_path, threshold_method, user_comme
         skeleton_ROI.setOpacity(1.0)
         binary_ROI = ImageRoi(0,0,binary.getProcessor())
         binary_ROI.setZeroTransparent(True)
-        binary_ROI.setOpacity(0.35)
+        binary_ROI.setOpacity(0.25)
 
         overlay = Overlay()
         overlay.add(binary_ROI)
@@ -206,7 +206,6 @@ def run(imp, preprocessor_path, postprocessor_path, threshold_method, user_comme
 
         univ = Image3DUniverse()
         univ.show()
-        univ.addMesh(binary)
 
         pixelWidth = imp_calibration.pixelWidth
         pixelHeight = imp_calibration.pixelHeight
@@ -235,6 +234,10 @@ def run(imp, preprocessor_path, postprocessor_path, threshold_method, user_comme
                 for p in edges[edge].getSlabs():
                     branch_points.append(Point3f(p.x * pixelWidth, p.y * pixelHeight, p.z * pixelDepth))
                 univ.addLineMesh(branch_points, Color3f(0.0, 255.0, 0.0), "branch-%s-%s"%(graph, edge), True)
+
+        # Add the surface
+        univ.addMesh(binary)
+        univ.getContent("binary").setTransparency(0.5)
 
     # Perform any postprocessing steps...
     status.showStatus("Running postprocessing...")
