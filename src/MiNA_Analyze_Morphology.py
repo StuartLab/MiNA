@@ -54,6 +54,14 @@ def ridge_detect(imp, rd_max, rd_min, rd_width, rd_length):
 def run(imp, preprocessor_path, postprocessor_path, threshold_method, user_comment):
 
     output_parameters = {"image title" : "",
+    "preprocessor path" : float,
+    "post processor path" : float,
+    "thresholding op" : float,
+    "use ridge detection" : bool,
+    "high contrast" : int,
+    "low contrast" : int,
+    "line width" : int,
+    "minimum line length" : int,
     "mitochondrial footprint" : float,
     "branch length mean" : float,
     "branch length median" : float,
@@ -66,6 +74,14 @@ def run(imp, preprocessor_path, postprocessor_path, threshold_method, user_comme
     "network branches stdevp" : float}
 
     output_order = ["image title",
+    "preprocessor path",
+    "post processor path",
+    "thresholding op",
+    "use ridge detection",
+    "high contrast",
+    "low contrast",
+    "line width",
+    "minimum line length",
     "mitochondrial footprint",
     "branch length mean",
     "branch length median",
@@ -86,6 +102,25 @@ def run(imp, preprocessor_path, postprocessor_path, threshold_method, user_comme
             imp = WindowManager.getCurrentImage()
     else:
         pass
+
+    # Store all of the analysis parameters in the table
+    if preprocessor_path == None:
+        preprocessor_str = ""
+    else:
+        preprocessor_str = preprocessor_path.getCanonicalPath()
+    if postprocessor_path == None:
+        postprocessor_str = ""
+    else:
+        postprocessor_str = preprocessor_path.getCanonicalPath()
+
+    output_parameters["preprocessor path"] = preprocessor_str
+    output_parameters["post processor path"] = postprocessor_str
+    output_parameters["thresholding op"] = threshold_method
+    output_parameters["use ridge detection"] = str(use_ridge_detection)
+    output_parameters["high contrast"] = rd_max
+    output_parameters["low contrast"] = rd_min
+    output_parameters["line width"] = rd_width
+    output_parameters["minimum line length"] = rd_length
 
     # Create and ImgPlus copy of the ImagePlus for thresholding with ops...
     status.showStatus("Determining threshold level...")
