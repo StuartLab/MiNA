@@ -1,0 +1,8 @@
+# Ignore any documentation or build files
+/doc/
+/target/
+
+#Ignore IDE generated files
+.classpath
+.project
+.settings

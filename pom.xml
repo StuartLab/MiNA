@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+		http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>22.1.0</version>
+		<relativePath />
+	</parent>
+
+	<groupId>io.github.StuartLab</groupId>
+	<artifactId>MiNA</artifactId>
+	<version>3.0.0-DEV</version>
+
+	<name>Mitochondrial Network Analysis</name>
+	<description>ImageJ plugin command for analyzing mitochondrial morphology.</description>
+	<url>https://github.com/StuartLab/MiNA</url>
+	<inceptionYear>2019</inceptionYear>
+	<organization>
+		<name>StuartLab</name>
+		<url>https://github.com/StuartLab</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>GNU General Public License v3.0</name>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<!-- See https://imagej.net/Team -->
+		<developer>
+			<id>ScienceToolkit</id>
+			<name>Andrew Valente</name>
+			<url>https://github.com/StuartLab</url>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<contributors>
+		<contributor>
+			<name>None</name>
+		</contributor>
+	</contributors>
+
+	<mailingLists>
+		<mailingList>
+			<name>None</name>
+		</mailingList>
+	</mailingLists>
+
+	<scm>
+		<connection>scm:git:git://github.com/StuartLab/MiNA</connection>
+		<developerConnection>scm:git:git@github.com:StuartLab/MiNA</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/StuartLab/MiNA</url>
+	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/StuartLab/MiNA/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>None</system>
+	</ciManagement>
+
+	<properties>
+		<package-name>MiNA</package-name>
+		<license.licenseName>GNU General Public License v3.0</license.licenseName>
+		<license.copyrightOwners>StuartLab</license.copyrightOwners>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>imagej.public</id>
+			<url>http://maven.imagej.net/content/groups/public</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>imagej</artifactId>
+		</dependency>
+        <dependency>
+			<groupId>net.imagej</groupId>
+			<artifactId>imagej-legacy</artifactId>
+		</dependency>
+	</dependencies>
+</project>
