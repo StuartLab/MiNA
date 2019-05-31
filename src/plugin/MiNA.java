@@ -9,7 +9,7 @@ import org.scijava.command.Command;
 import org.scijava.plugin.Parameter;
 import org.scijava.plugin.Plugin;
 
-import net.imagej.ImageJ;
+import resources.SimpleStats;
 
 /**
  * A Scijava Command for analyzing mitochondrial morphology as a
@@ -66,14 +66,20 @@ public class MiNA implements Command {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// Start an ImageJ session
-		final ImageJ ij = new ImageJ();
-		ij.ui().showUI();
 		
-		// Open a sample image from online. 
+		Integer[] x_i = {0, 1, 2};
+		Double average_i = SimpleStats.mean(x_i);
 		
-		// Run the plugin to see the interface.
-
+		Float[] x_f = {0.0f, 1.0f, 2.0f};
+		Double average_f = SimpleStats.mean(x_f);
+		
+		Double[] x_d = {0.0d, 1.0d, 2.0d};
+		Double average_d = SimpleStats.mean(x_d);
+		
+		System.out.println("Integer average: " + average_i.toString());
+		System.out.println("Float average: " + average_f.toString());
+		System.out.println("Double average: " + average_d.toString());
+		
 	}
 
 }
