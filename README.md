@@ -8,23 +8,40 @@ As others adopt the macros for additional applications and cell lines, we will c
 ## Project Road Map
 The links listed below provide a starting point for installing, using, modifying, and discussing the project.
 
-:microscope: [Installation and usage](https://imagej.net/MiNA_-_Mitochondrial_Network_Analysis) <br>
-:book: [The macro publication](https://doi.org/10.1016/j.acthis.2017.03.001) <br>
-:computer: [Source code](https://github.com/ScienceToolkit/MiNA/tree/master) <br>
-:octocat: [Gitter chat room](https://gitter.im/MiNA-Suggestions/Lobby) <br>
+- :microscope: [**The MiNA Wiki**](https://imagej.net/MiNA_-_Mitochondrial_Network_Analysis) - A thorough description of the tools, how to install them, and basic usage.
+- :book: [**The Publication**](https://doi.org/10.1016/j.acthis.2017.03.001) - The publication regarding the original macros. Note, the tool has changed a bit since then, so the Wiki is the most up to date source of information!
+- :computer: [**Source Code**](https://github.com/StuartLab/MiNA/tree/master) - Fork the project and get hacking.
+- :question: [**Issue Tracking**](https://github.com/StuartLab/MiNA/issues) - Submit bugs or feature requests here. Be sure to check the closed issues as well! We may have addressed a concern already.
 
+## Frequently Asked Questions (FAQ)
+**1. Will MiNA work for my purposes/cells/images?**<br>
+This is not a question we can definitively answer. In general, try it out and see if the skeleton and binary representations are faithful to the structures you see. You may need to do some preprocessing, but keep in mind how the preprocessing may be altering your images and the measurements (ex. blurring to reduce noise will often increase the measured footprint). In general, the tool is typically not suitable for extremely clumped mitochondria, poorly resolved images, or images with low contrast. The accuracy of the tool will be dependent on how well resolved the mitochondrial structures are which, for fluorescence microscopy, may not be attainable for certain cell lines where structures severely clump together.
 
-## The TODO List :wrench: :computer: :coffee:
-To give you an idea of what I am working on and what you will see next from MiNA, take  a peak at my TODO list. Do you have an idea for added functionality or a way to improve the analysis routine? Feel free to open an [issue](https://github.com/ScienceToolkit/MiNA/issues) to let me know about any software bugs, or start a discussion about additional features you would like on the [Gitter chat](). If you have forked the project and made it better, feel free to make a [pull request](https://yangsu.github.io/pull-request-tutorial/) so we all benefit. :octocat:
+**2. How do I install MiNA?**<br>
+If you intend on using the most recent version (*recommended*), follow the directions on the [MiNA wiki page](https://imagej.net/MiNA_-_Mitochondrial_Network_Analysis#Installation). We will also provide releases of previous stable versions of the tool as well as installation directions in the near future (target July 31st, 2019). With manual installations of previous releases you will not get automatic updates with bug patches and new features when updating Fiji.
 
-- [x] Create a clean release of the original macros.
-- [x] Complete the README file.
-- [x] Rewrite as IJ2 Jython parameterized script.
-- [x] Add an option for ridge detection.
-- [x] Extend for 3D analysis.
-- [ ] Extend for time series analysis. :question:<b>TODO</b>:question:
-- [ ] Extend for multiple ROI support. :construction: [<b>IN PROGRESS</b>](https://github.com/ScienceToolkit/MiNA/tree/multi-roi) :construction:
-- [ ] Incorporate functional analysis options. :question:<b>TODO</b>:question:
-- [x] Concatenating consecutive outputs in a common table.
-- [x] Create a Fiji update site for the project.
-- [ ] Create a full manual and description as a wiki site on imagej.net. :construction: [<b>IN PROGRESS</b>]() :construction:
+**3. Preprocessing options don't appear in the user interface anymore. How do I perform preprocessing before the analysis?**<br>
+The new tool gives the user an option to provide a preprocessing and post processing script path. These paths are for a macro or script that should be run before and after analyzing the image with MiNA. We moved to this from the options in the user interface so the tool would be more flexible and allow for preprocessing in a repeatable fashion without constraints. It does require learning a bit of programming to use, but there are many resources for that online. You can use the macro language for basic tasks, or dive into one of the supported scripting languages for more elaborate tasks (I like Python because it is a generally useful language for the sciences). Some resources are listed below:
+
+- [ImageJ User Guide](https://imagej.nih.gov/ij/docs/guide/user-guide.pdf)
+- [The Macro Recorder](https://imagej.net/Introduction_into_Macro_Programming)
+- [ImageJ Macro Writing Guide](https://imagej.nih.gov/ij/developer/macro/macros.html)
+- [Python Scripting Tutorials](https://imagej.net/Jython_Scripting)
+- [Python Language Tutorials](https://docs.python.org/3/tutorial/)
+
+Just as an example, we can process the image with a median filter and unsharp mask by creating a two line macro file and saving it. Here is what that file contents look like:
+
+```javascript
+run("Unsharp Mask...", "radius=3 mask=0.6");
+run("Median...", "radius=3"); // run the median filter
+```
+
+We would then save this file with the ".ijm" extension, as it is an ImageJ macro, and then browse for it within the MiNA user interface when selecting our options. One important thing to remember is that MiNA will process the last selected image, so if your preprocessing macro/script produces a new image, you need to make sure it is the "active" image at the end. Since the above macro does not do this, we don't need to worry about it.
+
+**4. The parameters returned by the tool are not the same as in the paper. Where are the number of individuals and number of networks?**<br>
+The parameters are slightly different. Some of the additional parameters had been requested by users and interested individuals. The list of all current parameters returned and how they are calculated is provided on the [wiki](https://imagej.net/MiNA_-_Mitochondrial_Network_Analysis#Processing_Pipeline_and_Usage) (take a look at the source code too!).
+
+Two parameters, the number of individuals and number of networks, were removed. These parameters were deduced from the number of junction points in each skeleton (or "graph"). Since the only requirement for an object to be a network was a single junction point, when larger networks break down into smaller ones, the number of networks often increases as the objects often still have at least one junction point. This could easily misinterpreted as a more "fused" structure even though it has obviously become a more "fragmented" one because of how the jargon is interpreted. To avoid such confusion, we removed it.
+
+**5. How can I get the original macro?**<br>
+Currently, you can dig through the [releases](https://github.com/StuartLab/MiNA/releases) and work on installing it manually. In the future, the releases will be cleaned up and installation instructions for each tagged release will be provided. We recommend taking a look at the most up to date version first though which can be installed using the Fiji Updater allowing for automatic updates as described on the [MiNA wiki page](https://imagej.net/MiNA_-_Mitochondrial_Network_Analysis#Installation).
