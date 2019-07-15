@@ -15,13 +15,13 @@ The links listed below provide a starting point for installing, using, modifying
 
 ## Frequently Asked Questions (FAQ)
 **1. Will MiNA work for my purposes/cells/images?**<br>
-This is not a question we can definitively answer. In general, try it out and see if the skeleton and binary representations are faithful to the structures you see. You may need to do some preprocessing, but keep in mind how the preprocessing may be altering your images and the measurements (ex. blurring to reduce noise will often increase the measured footprint). In general, the tool is typically not suitable for extremely clumped mitochondria, poorly resolved images, or images with low contrast. The accuracy of the tool will be dependent on how well resolved the mitochondrial structures are which, for fluorescence microscopy, may not be attainable for certain cell lines where structures severely clump together.
+This is not a question we can definitively answer or one we will try to answer. In general, try it out and see if the skeleton and binary representations are faithful to the structures you see. You may want to do some preprocessing as well, but keep in mind how the preprocessing may be altering your images and the measurements (ex. blurring to reduce noise will often increase the measured footprint). In general, the tool is typically not suitable for extremely clumped mitochondria, poorly resolved images, or images with low contrast. The accuracy of the tool will be dependent on how well resolved the mitochondrial structures are. With fluorescence microscopy for certain cell lines where mitochondria severely clump together, it may not be possible to obtain the required resolution. It is the responsibility of the researcher to understand and validate MiNA for their purposes and decide if it is suitable.
 
 **2. How do I install MiNA?**<br>
-If you intend on using the most recent version (*recommended*), follow the directions on the [MiNA wiki page](https://imagej.net/MiNA_-_Mitochondrial_Network_Analysis#Installation). We will also provide releases of previous stable versions of the tool as well as installation directions in the near future (target July 31st, 2019). With manual installations of previous releases you will not get automatic updates with bug patches and new features when updating Fiji.
+If you intend on using the most recent version (*recommended*), follow the directions on the [MiNA wiki page](https://imagej.net/MiNA_-_Mitochondrial_Network_Analysis#Installation). We hope to also provide releases of previous stable versions of the tool as well as paired installation directions in the future. With manual installations of previous releases, you will not get automatic updates with bug patches and new features when updating Fiji.
 
 **3. Preprocessing options don't appear in the user interface anymore. How do I perform preprocessing before the analysis?**<br>
-The new tool gives the user an option to provide a preprocessing and post processing script path. These paths are for a macro or script that should be run before and after analyzing the image with MiNA. We moved to this from the options in the user interface so the tool would be more flexible and allow for preprocessing in a repeatable fashion without constraints. It does require learning a bit of programming to use, but there are many resources for that online. You can use the macro language for basic tasks, or dive into one of the supported scripting languages for more elaborate tasks (I like Python because it is a generally useful language for the sciences). Some resources are listed below:
+The new tool gives the user an option to provide a preprocessing and post processing script path. These paths are for a macro or script that should be run before and after analyzing the image with MiNA. We moved to this from the options in the user interface so the tool would be more flexible and allow for preprocessing in a repeatable fashion without constraints. It does require learning a bit of programming to use, but there are many resources for that online. You can use the macro language for basic processes, or dive into one of the supported scripting languages creating more elaborate pipelines. I like Python because it is a generally useful language for the sciences so learning it for ImageJ provides skills you can transfer to other tasks. Some resources are listed below:
 
 - [ImageJ User Guide](https://imagej.nih.gov/ij/docs/guide/user-guide.pdf)
 - [The Macro Recorder](https://imagej.net/Introduction_into_Macro_Programming)
@@ -32,8 +32,8 @@ The new tool gives the user an option to provide a preprocessing and post proces
 Just as an example, we can process the image with a median filter and unsharp mask by creating a two line macro file and saving it. Here is what that file contents look like:
 
 ```javascript
-run("Unsharp Mask...", "radius=3 mask=0.6");
-run("Median...", "radius=3"); // run the median filter
+run("Unsharp Mask...", "radius=3 mask=0.6"); // sharpen with an unsharp mask
+run("Median...", "radius=3"); // smooth spurious noise with a median filter
 ```
 
 We would then save this file with the ".ijm" extension, as it is an ImageJ macro, and then browse for it within the MiNA user interface when selecting our options. One important thing to remember is that MiNA will process the last selected image, so if your preprocessing macro/script produces a new image, you need to make sure it is the "active" image at the end. Since the above macro does not do this, we don't need to worry about it.
