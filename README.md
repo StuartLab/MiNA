@@ -45,3 +45,10 @@ Two parameters, the number of individuals and number of networks, were removed. 
 
 **5. How can I get the original macro?**<br>
 Currently, you can dig through the [releases](https://github.com/StuartLab/MiNA/releases) and work on installing it manually. In the future, the releases will be cleaned up and installation instructions for each tagged release will be provided. We recommend taking a look at the most up to date version first though which can be installed using the Fiji Updater allowing for automatic updates as described on the [MiNA wiki page](https://imagej.net/MiNA_-_Mitochondrial_Network_Analysis#Installation).
+
+**6. How can I familiarize myself with ImageJ/Fiji and image analysis first?**<br>
+There are many resources in print and online to help with getting started with ImageJ and image analysis in general. Below is a list of some to get started with.
+
+  * [ImageJ Tutorials Wiki](https://imagej.net/Category:Tutorials)
+  * [Bankhead, Peter. (2014). Analyzing fluorescence microscopy images with ImageJ.](https://petebankhead.gitbooks.io/imagej-intro/content/)
+  * [Vebjorn Ljosa and Anne E. Carpenter. 2009. **Introduction to the Quantitative Analysis of Two-Dimensional Fluorescence Microscopy Images for Cell-Based Screening.** PLOS Comput Biol.  doi: 10.1371/journal.pcbi.1000603.](https://dx.doi.org/10.1371%2Fjournal.pcbi.1000603)
