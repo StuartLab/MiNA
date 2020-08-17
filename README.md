@@ -53,7 +53,7 @@ There are many resources in print and online to help with getting started with I
  ## Installation
  **You should have [FIJI](https://fiji.sc/) installed.** </br>
  **1.** In the directory of your FIJI installation go to the Fiji.app folder </br>
- **2.** Move the folder with the name "mina" located in "src" of this repository to Fiji.app>jars>lib </br>
+ **2.** Move the folder with the name "mina" located in "src" of this repository to Fiji.app>jars>lib (create the folder lib if it does not already exist </br>
  **3.** Move the file "MiNA_Analyze_Morphology.py" located at "src>scripts" to Fiji.app>scripts </br>
  **4.** In the build folder of this repository you will see a jar file. Move it inside Fiji.app>plugins 
 
