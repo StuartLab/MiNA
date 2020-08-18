@@ -76,16 +76,12 @@ def preview_side_by_side(overlay, filtered, table):
         except:
             pass
     
-    def overlay_z_in(event):
+    def zoom_in(event):
         zoom_image(overlay, overlay_label, 200)
-
-    def overlay_z_out(event):
-        zoom_image(overlay, overlay_label, -200)
-
-    def filtered_z_in(event):
         zoom_image(filtered, filtered_label, 200)
 
-    def filtered_z_out(event):
+    def zoom_out(event):
+        zoom_image(overlay, overlay_label, -200)
         zoom_image(filtered, filtered_label, -200)
 
 
@@ -100,17 +96,15 @@ def preview_side_by_side(overlay, filtered, table):
     filtered_scroll = JScrollPane()
     filtered_scroll.setViewportView(filtered_label)
 
-    ovrl_sum = JButton("+", actionPerformed=overlay_z_in)
-    ovrl_sum.setBounds(0,450,190,20)
+    overlay_scroll.getHorizontalScrollBar().setModel(filtered_scroll.getHorizontalScrollBar().getModel())
+    overlay_scroll.getVerticalScrollBar().setModel(filtered_scroll.getVerticalScrollBar().getModel())
 
-    ovrl_minus = JButton("-", actionPerformed=overlay_z_out)
-    ovrl_minus.setBounds(190,450,190,20)
 
-    filt_sum = JButton("+", actionPerformed=filtered_z_in)
-    filt_sum.setBounds(410,450,190,20)
+    plus = JButton("+", actionPerformed=zoom_in)
+    plus.setBounds(5,450,400,20)
 
-    filt_minus = JButton("-", actionPerformed=filtered_z_out)
-    filt_minus.setBounds(600,450,190,20)
+    minus = JButton("-", actionPerformed=zoom_out)
+    minus.setBounds(405,450,400,20)
 
     split_pane = JSplitPane(JSplitPane.HORIZONTAL_SPLIT, overlay_scroll, filtered_scroll)
     split_pane.setDividerLocation(400)
@@ -119,8 +113,7 @@ def preview_side_by_side(overlay, filtered, table):
     frame = JFrame(" "*40 + "Orignal+Overlay" + " "*95 + "Preprocessed Image")
     frame.setSize(820,600)
     frame.add(split_pane)
-    frame.add(ovrl_sum);frame.add(ovrl_minus)
-    frame.add(filt_sum);frame.add(filt_minus)
+    frame.add(plus);frame.add(minus)
     frame.add(table)
     frame.setResizable(False)
     frame.setLayout(None)
