@@ -1,6 +1,7 @@
-from javax.swing import JPanel, JFrame, JLabel, ImageIcon, JTextArea
+from javax.swing import JPanel, JFrame, JLabel, ImageIcon, JTextArea, JScrollPane, JSplitPane, JButton
 from java.awt.event import ComponentListener, ComponentAdapter
-from java.awt import Image, Color
+from java.awt import Image, Color, Dimension, Graphics2D, RenderingHints
+from java.awt.image import BufferedImage
 from java.lang import Runnable
 
 from ij import IJ, WindowManager
@@ -10,61 +11,6 @@ from ij.plugin import Duplicator
 
 from sc.fiji.analyzeSkeleton import AnalyzeSkeleton_;
 
-
-class resize_listener(ComponentAdapter): 
-    def __init__(self, app):
-        self.app = app
-    
-    def componentResized(self, ce):
-        frame = self.app.frame
-        frame_size = frame.getSize()
-        img1 = self.app.img1.getScaledInstance(frame_size.width/2, frame_size.height-self.app.table_height, Image.SCALE_SMOOTH)
-        img2 = self.app.img2.getScaledInstance(frame_size.width/2, frame_size.height-self.app.table_height, Image.SCALE_SMOOTH)
-        self.app.img1_lbl.setBounds(0,0,frame_size.width,frame_size.height-self.app.table_height)
-        self.app.img2_lbl.setBounds(frame_size.width/2,0,frame_size.width,frame_size.height-self.app.table_height)
-        self.app.img1_lbl.setIcon(ImageIcon(img1))
-        self.app.img2_lbl.setIcon(ImageIcon(img2))
-        self.table_x = 8
-        if (frame_size.width > self.app.table_width):
-            self.table_x = frame_size.width/2 - self.app.table_width/2
-        self.app.table.setBounds(self.table_x,frame_size.height-self.app.table_height, self.app.table_width, self.app.table_height)
-
-class Frame(Runnable):
-    def __init__(self, title, img1, img2, w, h, table):
-        if w*h > 2000:
-            w -= w/3
-            h -= h/3
-            img1 = img1.getScaledInstance(w, h, Image.SCALE_SMOOTH)
-            img2 = img2.getScaledInstance(w, h, Image.SCALE_SMOOTH)
-        self.img1 = img1
-        self.title = title
-        self.w = w
-        self.h = h
-        self.table = table
-
-        self.img1_icon = ImageIcon(img1)
-        self.img1_lbl = JLabel()
-        self.img1_lbl.setBounds(0,0,w,h)
-        self.img1_lbl.setIcon(self.img1_icon)
-
-        self.img2 = img2
-        self.img2_icon = ImageIcon(img2)
-        self.img2_lbl = JLabel()
-        self.img2_lbl.setBounds(w,0,w,h)
-        self.img2_lbl.setIcon(self.img2_icon)
-
-        self.table_width = self.table.getSize().width
-        self.table_height = self.table.getSize().height
-        self.table.setBounds(8, h, self.table_width,self.table_height)
-
-        
-    def run(self):
-        self.frame = JFrame(self.title, size=(max(self.w*2+15, self.table_width), self.h+self.table_height), layout=None)
-        self.frame.addComponentListener(resize_listener(self))
-        self.frame.add(self.img1_lbl);self.frame.add(self.img2_lbl)
-        self.frame.add(self.table)
-        self.frame.getContentPane().setBackground(Color.white)
-        self.frame.setVisible(True)
         
 
 def overlay_2D(imp, binary, skeleton, skel_result):
@@ -115,26 +61,85 @@ def overlay_2D(imp, binary, skeleton, skel_result):
 
     imp.setOverlay(overlay)
     imp.updateAndDraw()   
-
+    
 
 def preview_side_by_side(overlay, filtered, table):
-    width = filtered.getWidth()
-    height = filtered.getHeight()
-    title = filtered.getTitle()
+    def zoom_image(image, label, factor):
+        try:
+            icon = label.getIcon()
+            buf = BufferedImage(icon.getIconWidth()+factor, icon.getIconHeight()+factor, BufferedImage.TYPE_INT_RGB)
+            grf = buf.createGraphics()
+            grf.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR)
+            grf.drawImage(image, 0, 0, icon.getIconWidth()+factor, icon.getIconHeight()+factor, None)
+            grf.dispose()
+            label.setIcon(ImageIcon(buf))
+        except:
+            pass
+    
+    def overlay_z_in(event):
+        zoom_image(overlay, overlay_label, 200)
+
+    def overlay_z_out(event):
+        zoom_image(overlay, overlay_label, -200)
+
+    def filtered_z_in(event):
+        zoom_image(filtered, filtered_label, 200)
+
+    def filtered_z_out(event):
+        zoom_image(filtered, filtered_label, -200)
+
+
     overlay = overlay.getImage()
     filtered = filtered.getImage()
 
-    frame = Frame(title, overlay, filtered, width, height, table)
-    frame.run()
+    overlay_label = JLabel(ImageIcon(overlay))
+    overlay_scroll = JScrollPane()
+    overlay_scroll.setViewportView(overlay_label)
+
+    filtered_label = JLabel(ImageIcon(filtered))
+    filtered_scroll = JScrollPane()
+    filtered_scroll.setViewportView(filtered_label)
+
+    ovrl_sum = JButton("+", actionPerformed=overlay_z_in)
+    ovrl_sum.setBounds(0,450,190,20)
+
+    ovrl_minus = JButton("-", actionPerformed=overlay_z_out)
+    ovrl_minus.setBounds(190,450,190,20)
+
+    filt_sum = JButton("+", actionPerformed=filtered_z_in)
+    filt_sum.setBounds(410,450,190,20)
+
+    filt_minus = JButton("-", actionPerformed=filtered_z_out)
+    filt_minus.setBounds(600,450,190,20)
+
+    split_pane = JSplitPane(JSplitPane.HORIZONTAL_SPLIT, overlay_scroll, filtered_scroll)
+    split_pane.setDividerLocation(400)
+    split_pane.setBounds(0,0,800,450)
+
+    frame = JFrame(" "*40 + "Orignal+Overlay" + " "*95 + "Preprocessed Image")
+    frame.setSize(820,600)
+    frame.add(split_pane)
+    frame.add(ovrl_sum);frame.add(ovrl_minus)
+    frame.add(filt_sum);frame.add(filt_minus)
+    frame.add(table)
+    frame.setResizable(False)
+    frame.setLayout(None)
+    frame.setVisible(True)
 
 def prepare_table(params):
     panel = JPanel()
     param_space = 0
-    table_h = 70
+    i = 0
 
     for param in params:
         if param != "":
             p = JTextArea(param)
+            if i%2 == 0:
+                p.setBackground(Color.LIGHT_GRAY)
+            else:
+                p.setBackground(Color.white)
+            i += 1
+
             if "Thresholding" in param:
                 p.setBounds(param_space,0,177,100)
             else:
@@ -143,12 +148,7 @@ def prepare_table(params):
             panel.add(p)
             param_space += 130
 
-            if "Median" in param:
-                table_h = 100
-            elif "Thresholding" not in param:
-                table_h = 137
-
-    panel.setBounds(0,0,680,table_h)
+    panel.setBounds(50,472,680,137)
     panel.setBackground(Color.white)
     panel.setLayout(None)
     panel.setVisible(True)
