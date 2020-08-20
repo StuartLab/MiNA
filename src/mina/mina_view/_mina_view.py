@@ -101,10 +101,10 @@ def preview_side_by_side(overlay, filtered, table):
 
 
     plus = JButton("+", actionPerformed=zoom_in)
-    plus.setBounds(5,450,400,20)
+    plus.setBounds(150,450,250,23)
 
     minus = JButton("-", actionPerformed=zoom_out)
-    minus.setBounds(405,450,400,20)
+    minus.setBounds(410,450,250,23)
 
     split_pane = JSplitPane(JSplitPane.HORIZONTAL_SPLIT, overlay_scroll, filtered_scroll)
     split_pane.setDividerLocation(400)
@@ -147,8 +147,11 @@ def prepare_table(params):
     panel.setVisible(True)
     return panel
 
-def preview_images(imp, preprocessing_filters, threshold_image, use_ridge_detection, ridge_detect, rd_max, rd_min, rd_width, rd_length, param_strings): 
+def preview_images(imp, preprocessing_filters, threshold_image, use_ridge_detection, ridge_detect, rd_max, rd_min, rd_width, rd_length, param_strings, 
+        user_preprocessing, preprocessor_path): 
+        
     imp_original = Duplicator().run(imp, 1, 1)
+    user_preprocessing(imp, preprocessor_path)
     preprocessing_filters(imp)
     imp_filtered = Duplicator().run(imp, 1, 1)
     binary = threshold_image(imp)
