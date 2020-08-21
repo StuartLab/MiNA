@@ -79,6 +79,7 @@ def ridge_detect(imp, rd_max, rd_min, rd_width, rd_length):
     IJ.run(skel, "Skeletonize (2D/3D)", "")
     skel.hide()
     return(skel)
+    
 
 def preprocessing_filters(imp):
     filter_dict = {order_median : (lambda:mina.filters.median(imp, median_radius), use_median), 
@@ -89,6 +90,17 @@ def preprocessing_filters(imp):
         pre_filter, use_filter = filter_dict[i]
         if use_filter:
             pre_filter()
+
+
+def user_preprocessing(imp, preprocessor_path):
+    if preprocessor_path != None:
+        if preprocessor_path.exists():
+            imp.show()
+            preprocessor_thread = scripts.run(preprocessor_path, True)
+            preprocessor_thread.get()
+            imp = WindowManager.getCurrentImage()
+    else:
+        warnings.warn("Preprocessing file not found. Defaulting to None")
 
 
 def threshold_image(imp):
@@ -139,29 +151,18 @@ def run(imp_original, preprocessor_path, postprocessor_path, threshold_method, u
 
     # Perform any preprocessing steps...
     status.showStatus("Preprocessing image...")
+    user_preprocessing(imp, preprocessor_path)
     preprocessing_filters(imp)
-    if preprocessor_path != None:
-        if preprocessor_path.exists():
-            imp.show()
-            preprocessor_thread = scripts.run(preprocessor_path, True)
-            preprocessor_thread.get()
-            imp = WindowManager.getCurrentImage()
-        else:
-                # Somewhat of a patch to deal with working directory being used
-                # I am not sure why that gets used. It does not happen for the
-                # postprocessing path.
-                warnings.warn("Preprocessing file not found. Defaulting to None")
-                preprocessor_path = None
 
     # Store all of the analysis parameters in the table
-    try:
+    if preprocessor_path.exists():
         preprocessor_str = preprocessor_path.getCanonicalPath()
-    except:
+    else:
         preprocessor_str = ""
 
-    try:
-        postprocessor_str = preprocessor_path.getCanonicalPath()
-    except:
+    if postprocessor_path.exists():
+        postprocessor_str = postprocessor_path.getCanonicalPath()
+    else:
         postprocessor_str = ""
 
     output_parameters["preprocessor path"] = preprocessor_str
@@ -305,7 +306,7 @@ if (__name__=="__main__") or (__name__=="__builtin__"):
     if preview_preprocessing:
         # preview preprocessing filters but do not run the analysis 
         param_table = [median_string, unsharp_string, clahe_string, ridge_string, thresh_string]
-        mina_view.preview_images(imp, preprocessing_filters, threshold_image, use_ridge_detection, ridge_detect, rd_max, rd_min, rd_width, rd_length, param_table)
-
+        mina_view.preview_images(imp, preprocessing_filters, threshold_image, use_ridge_detection, ridge_detect, rd_max, rd_min, rd_width, rd_length, param_table,
+            user_preprocessing, preprocessor_path)
     else:
         run(imp, preprocessor_path, postprocessor_path, threshold_method, user_comment)
