@@ -52,9 +52,14 @@ There are many resources in print and online to help with getting started with I
   
  ## Installation
  **You should have [FIJI](https://fiji.sc/) installed.** </br>
- **1.** In the directory of your FIJI installation go to the Fiji.app folder </br>
- **2.** Move the folder with the name "mina" located in "src" of this repository to Fiji.app>jars>lib (create the folder lib if it does not already exist </br>
- **3.** Move the file "MiNA_Analyze_Morphology.py" located at "src>scripts" to Fiji.app>scripts </br>
- **4.** In the build folder of this repository you will see a jar file. Move it inside Fiji.app>plugins 
+ **1.** Download the contents of this repository as a zipped folder</br>
+ **2.** Go to your FIJI installation and go to the "Fiji.app" folder. If you're using mac, right click on the FIJI icon and select "Show Package Contents".</br>
+ **3.** Move the folder with the name "mina" located in "src" of this repository to jars>lib (create the folder lib if it does not already exist). </br>
+ **4.** Move the file "MiNA_Analyze_Morphology.py" located at "src>scripts" to "scripts". </br>
+ **5.** Move the folder "mina_icons" inside "images". </br>
+ **6.** In the "build" folder of this repository you will see a jar file. Move it inside "plugins". </br> 
+ **7.** Finally, start ImageJ and if you don't have the Biomedroup site installed then click on Help->Update...</br>
+        Navigate to the update site manager (Manage update sites). Add the "Biomedgroup" site by checking the checkbox beside the site.</br>
+        Close the site manager dialog (Close) and apply the changes (Apply changes)
 
  
