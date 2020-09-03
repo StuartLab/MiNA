@@ -38,6 +38,51 @@ The links listed below provide a starting point for installing, using, modifying
  <summary>Input Parameters</summary>
  <table>
   <tbody>
+   <tr><td>Parameter</td><td>Description</td></tr>
+   <tr><td>Pre-processor path (optional)</td><td>The path to an ImageJ script or macro to run before the analysis is run. This is typically used to run user defined preprocessing operations on the image before it is analyzed, such as expanding the histogram range, reducing noise by filtering, or deconvolving the image. It is optional</td></tr>
+   <tr><td>Post-processor path (optional)</td><td>The path to an ImageJ compatible script or macro to be run when the analysis completes. This can be used to trigger saving a copy of the data, plotting the current data stored in the ResultsTable window, and much more. It is optional.</td></tr>
+   <tr><td>Threshold method</td><td>The algorithm used to determine the threshold value. Note that the analysis expects a positive signal. The analysis will fail if the intensity is inverted.</td></tr>
+   <tr><td>User comment</td><td>A user comment to store in the table. This supports key-value pairs, which is useful for storing condition information. For example, if I wanted a column "oxygen" and a column "glucose" to store the culture conditions, I could use the comment "oxygen=18,glucose=high" to add the value 18 to a column titled oxygen and the value high to another column titled glucose.</td></tr>
+  </tbody>
+ </table>
+ 
+ <b>Ridge Detection</b>
+ <table>
+  <tbody>
+   <tr><td>Use ridge detection (2D only)</td><td>Check if ridge detection is to be used. If it is unchecked, the analysis will proceed with iterative thinning to generate the morphological skeleton. Note that ridge detection is only available for 2D images currently.</td></tr>
+   <tr><td>High contrast</td><td></td></tr>
+   <tr><td></td><td>This defines the High Contrast value for the ridge detection plugin.</td></tr>
+   <tr><td>Low contrast</td><td>This defines the Low Contrast value for the ridge detection plugin.</td></tr>
+   <tr><td>Line width</td><td>The expected width of the line like mitochondrial features.</td></tr>
+   <tr><td>Line length</td><td>The minimum line length to be included in the analysis. Setting this above 0 can aid in removing spurious small lines.</td></tr>
+  </tbody>
+ </table>
+ 
+ <b>Median Filter</b></br>
+ Smooths each pixel by replacing each pixel with the neighbourhood median.
+ <table>
+  <tbody>
+   <tr><td>Radius</td><td>Size of the neighbourhood</td></tr>
+ </tbody>
+ </table>
+ 
+ <b>Unsharp Mask</b></br>
+ Sharpens and enhances edges by subtracting a blurred version of the image (the unsharp mask) from the original. The unsharp mask is created by Gaussian blurring the original image and then multiplying by the “Mask Weight” parameter.
+ <table>
+  <tbody>
+   <tr><td>Radius (sigma)</td><td>Increase the Guassian blur radius sigma to increase contrast</td></tr>
+   <tr><td>Mask weigth</td><td>increase value for additional edge enhancement</td></tr>
+  </tbody>
+ </table>
+ 
+ <b>Enhance Local Contrast CLAHE</b></br>
+ Enhances local contrast of the image.
+ <table>
+  <tbody>
+   <tr><td>block size</td><td>the size of the local region around a pixel for which the histogram is equalized. This size should be larger than the size of features to be preserved.</td></tr>
+   <tr><td>histogram bins</td><td>the number of histogram bins used for histogram equalization. The implementation internally works with byte resolution, so values larger than 256 are not meaningful. This value also limits the quantification of the output when processing 8bit gray or 24bit RGB images. The number of histogram bins should be smaller than the number of pixels in a block.</td></tr>
+   <tr><td>max slope</td><td>limits the contrast stretch in the intensity transfer function. Very large values will let the histogram equalization do whatever it wants to do, that is result in maximal local contrast. The value 1 will result in the original image.</td></tr>
+   <tr><td>mask</td><td>choose, from the currently opened images, one that should be used as a mask for the filter application.</td></tr>
   </tbody>
  </table>
 </details>
