@@ -3,12 +3,10 @@
 ## About the Project
 MiNA (Mitochondrial Network Analysis) is a project aimed at making the analysis and characterization of mitochondrial network morphology more accurate, faster, and less subjective. It consists of a set of ImageJ macros that are used to measure meaningful morphological parameters from fluorescence micrographs of labelled mitochondria. The project began as a result of extensive work with adherent mammalian cell cultures in the laboratory of [Dr. Jeff Stuart](https://brocku.ca/mathematics-science/biology/directory/jeff-stuart/) at Brock University. Since then it has been rewritten as Python scripts adding support for 3D datasets and for using ridge detection (as suggested by one of the early reviewers of the paper we published about the macros - thank you for the suggestion!).
 
-As others adopt the macros for additional applications and cell lines, we will continue to use the feedback from these users to extend and further generalize the tools.
-
 ## Project Road Map
 The links listed below provide a starting point for using, modifying, and discussing the project.
 
-- :book: [**The Publication**](https://doi.org/10.1016/j.acthis.2017.03.001) - The publication regarding the original macros. 
+- :book: [**The Publication**](https://doi.org/10.1016/j.acthis.2017.03.001) - The publication regarding the original macros. Look at **Processing Pipeline and Usage** for more up to date and thorough information.
 - :computer: [**Source Code**](https://github.com/StuartLab/MiNA/tree/master) - Fork the project and get hacking.
 - :question: [**Issue Tracking**](https://github.com/StuartLab/MiNA/issues) - Submit bugs or feature requests here. Be sure to check the closed issues as well! We may have addressed a concern already.
 
