@@ -145,6 +145,143 @@ There are many resources in print and online to help with getting started with I
  * Overlaps or 3D complexities are not trivial (usually applies to thicker cells)
  * Images and/or sample labelling is not good quality
  
+ <details>
+ <summary>More details on image suitability</summary>
+ <table>
+  <tbody>
+    <tr>
+      <td>
+        Suitability
+      </td>
+      <td>
+        Acquisition Resolution
+      </td>
+      <td>
+        Contrast/Noise
+      </td>
+      <td>
+        Cell Characteristics
+      </td>
+      <td>
+        Preprocessing
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Possibly
+      </td>
+      <td>
+        <ul>
+          <li>
+            Confocal/Spinning disk + deconvolution.
+          </li>
+          <li>
+            Super-resolution (SR-SIM, STED, etc).
+          </li>
+          <li>
+            Segmented electron microscopy stacks.
+          </li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li>
+            Labelled with bright, membrane potential insensitive dye/marker.
+          </li>
+          <li>
+            None or minimal non specific labelling.
+          </li>
+          <li>
+            None or minimal non background flourescence.
+          </li>
+          <li>
+            Low-noise.
+          </li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li>
+            2D image of very thin adherent cells or 3D image of thicker cells.
+          </li>
+          <li>
+            Simple/sparsely distributed mitochondrial structures.
+          </li>
+          <li>
+            Primarily tubular or small punctate structures.
+          </li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li>
+            Noise reduction (median filtering, non-linear local means, etc).
+          </li>
+          <li>
+            Normalizing the brightness range in all images.
+          </li>
+          <li>
+            Deconvolution.
+          </li>
+          <li>
+            Structural filters such as Frangi/Vesselness filtering or LoG filtering in the same manner on all images.*
+          </li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        Unlikely
+      </td>
+      <td>
+        <ul>
+          <li>
+            Conventional fluorescence.
+          </li>
+          <li>
+            Confocal/spinning disk with low NA objective.
+          </li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li>
+            Weakly labelled mitochondria or labelled with membrane potential sensitive dye (such as TMRM).
+          </li>
+          <li>
+            High background or noise.
+          </li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li>
+            2D projection or slice of thick cells.
+          </li>
+          <li>
+            Densely arranged mitochondrial structures.
+          </li>
+          <li>
+            Tissues or 3D cultures
+          </li>
+        </ul>
+      </td>
+      <td>
+        <ul>
+          <li>
+            Using different preprocessing in different sets of images.
+          </li>
+          <li>
+            Using structural filters such as Frangi/Vesselness filtering and LoG filtering differently across different groups of images.
+          </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+ </details>
+ 
+ 
  ## Installation
  **You should have [FIJI](https://fiji.sc/) installed.** </br>
  **1.** Download the contents of this repository as a zipped folder</br>
