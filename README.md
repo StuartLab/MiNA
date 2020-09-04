@@ -132,10 +132,7 @@ The parameters are slightly different. Some of the additional parameters had bee
 
 Two parameters, the number of individuals and number of networks, were removed. These parameters were deduced from the number of junction points in each skeleton (or "graph"). Since the only requirement for an object to be a network was a single junction point, when larger networks break down into smaller ones, the number of networks often increases as the objects often still have at least one junction point. This could easily misinterpreted as a more "fused" structure even though it has obviously become a more "fragmented" one because of how the jargon is interpreted. To avoid such confusion, we removed it.
 
-**3. How can I get the original macro?**<br>
-Currently, you can dig through the [releases](https://github.com/StuartLab/MiNA/releases) and work on installing it manually. In the future, the releases will be cleaned up and installation instructions for each tagged release will be provided. We recommend taking a look at the most up to date version first though which can be installed using the Fiji Updater allowing for automatic updates as described on the [MiNA wiki page](https://imagej.net/MiNA_-_Mitochondrial_Network_Analysis#Installation).
-
-**4. How can I familiarize myself with ImageJ/Fiji and image analysis first?**<br>
+**3. How can I familiarize myself with ImageJ/Fiji and image analysis first?**<br>
 There are many resources in print and online to help with getting started with ImageJ and image analysis in general. Below is a list of some to get started with.
 
   * [ImageJ Tutorials Wiki](https://imagej.net/Category:Tutorials)
