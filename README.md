@@ -6,10 +6,9 @@ MiNA (Mitochondrial Network Analysis) is a project aimed at making the analysis 
 As others adopt the macros for additional applications and cell lines, we will continue to use the feedback from these users to extend and further generalize the tools.
 
 ## Project Road Map
-The links listed below provide a starting point for installing, using, modifying, and discussing the project.
+The links listed below provide a starting point for using, modifying, and discussing the project.
 
-- :microscope: [**The MiNA Wiki**](https://imagej.net/MiNA_-_Mitochondrial_Network_Analysis) - A thorough description of the tools and basic usage.
-- :book: [**The Publication**](https://doi.org/10.1016/j.acthis.2017.03.001) - The publication regarding the original macros. Note, the tool has changed a bit since then, so the Wiki is the most up to date source of information!
+- :book: [**The Publication**](https://doi.org/10.1016/j.acthis.2017.03.001) - The publication regarding the original macros. 
 - :computer: [**Source Code**](https://github.com/StuartLab/MiNA/tree/master) - Fork the project and get hacking.
 - :question: [**Issue Tracking**](https://github.com/StuartLab/MiNA/issues) - Submit bugs or feature requests here. Be sure to check the closed issues as well! We may have addressed a concern already.
 
