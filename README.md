@@ -111,6 +111,7 @@ The links listed below provide a starting point for using, modifying, and discus
 <details>
  <summary>Running the Tool</summary>
  </br>
+ 
  <b>1.</b> Open an image. MiNA expects an 8-bit or 16-bit single channel image that can be 2D or 3D (with limited options). </br>
  
  <b>2.</b> Select a single cell using the rectangular ROI tool. You may make a copy of the cropped region if you wish. </br>
