@@ -139,6 +139,12 @@ There are many resources in print and online to help with getting started with I
   * [Bankhead, Peter. (2014). Analyzing fluorescence microscopy images with ImageJ.](https://petebankhead.gitbooks.io/imagej-intro/content/)
   * [Vebjorn Ljosa and Anne E. Carpenter. 2009. **Introduction to the Quantitative Analysis of Two-Dimensional Fluorescence Microscopy Images for Cell-Based Screening.** PLOS Comput Biol.  doi: 10.1371/journal.pcbi.1000603.](https://dx.doi.org/10.1371%2Fjournal.pcbi.1000603)
   
+ ## Points to keep in mind before using MiNA
+ The output is likely to be inaccurate if:
+ * Mitochondria are not independently resolved
+ * Overlaps or 3D complexities are not trivial (usually applies to thicker cells)
+ * Images and/or sample labelling is not good quality
+ 
  ## Installation
  **You should have [FIJI](https://fiji.sc/) installed.** </br>
  **1.** Download the contents of this repository as a zipped folder</br>
