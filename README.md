@@ -150,13 +150,23 @@ There are many resources in print and online to help with getting started with I
  <table>
   <tbody>
    <tr> <td></td> <td>Likely Suitable</td> <td>Potentially Suitable</td> <td>Likely Unsuitable</td></tr>
+   
    <tr><td>Microscopy</td>
     <td> <ul><li>Deconvolved confocal/spinning disk</li><li>Super-resolution (SR-SIM, STED, etc).</li><li>Segmented electron microscopy stacks.</li></ul> </td>
-    <td> <ul><li>Confocal</li> <li>Spinning Disk</li> <li>Structured illumination (pseudo-confocal)</li> <li>Deconvolved conventional fluorescence</li></ul> </td><td></td></tr>
+    <td> <ul><li>Confocal</li> <li>Spinning Disk</li> <li>Structured illumination (pseudo-confocal)</li> <li>Deconvolved conventional fluorescence</li></ul></td> <td><ui><li>Conventional fluorescence</li><li>Confocal/spinning disk with low NA objective</li></ui></td></tr>
    
-   <tr><td>Staining/Labelling</td><td></td><td></td><td></td></tr>
+  <tr>
+  <td>Staining/Labelling</td><td><ui><li>Labelled with bright, membrane potential insensitive dye/marker (e.g. GFP)</li><li>No or minimal non-specific labelling.</li><li>No or minimal background flourescence.</li><li>Low noise.</li></ui></td>
+ <td><ui><li>Labelled with bright, membrane potential-sensitive marker but minimal inhibition or uncoupling of oxphos</li><li>Low background fluorescence</li></ui></td>
+ <td><ui><li>Weakly labelled mitochondria or respiration-deficient/uncoupled mitochondria labelled with membrane potential sensitive dye (such as TMRM)</li><li>High background or noise</li></ui></td>
+ </tr>
    
-   <tr><td>Morphological Charachteristics</td><td></td><td></td><td></td></tr>
+  <tr>
+  <td>Morphological Charachteristics</td>
+ <td><ui><li>2D or 3D image of thinner adherent cells or 3D image of thicker cells.</li><li>Simple/sparsely distributed mitochondrial structures.</li><li>Simple/sparsely distributed mitochondrial structures.</li></ui></td>
+ <td><ui><li>Complex but well-resolved mitochondrial structures</li><li>Highly branched tubular structures</li></ui></td>
+ <td><ui><li>2D projection or slice of thick cells.</li><li>Densely packed mitochondrial structures.</li><li>Cell containing highly refractive regions (e.g. triglyceride).</li><li>Tissues or 3D cultures</li></ui></td>
+ </tr>
 
 
   </tbody>
