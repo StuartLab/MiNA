@@ -36,7 +36,7 @@ The links listed below provide a starting point for using, modifying, and discus
       <li>minError<sup>[11]</sup></li>
       <li>minimum<sup>[6]</sup></li>
       <li>moments<sup>[12]</sup></li>
-      <li>otsu<sup></sup>[13]</li>
+      <li>otsu<sup>[13]</sup></li>
       <li>percentile<sup>[14]</sup></li>
      </ul>
     </td>  
