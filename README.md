@@ -42,7 +42,7 @@ The links listed below provide a starting point for using, modifying, and discus
     </td>  
     <td>
      <ul>
-      <li>rentiEntropy<sup>[9]</sup></li>
+      <li>rentyiEntropy<sup>[9]</sup></li>
       <li>rosin<sup></sup></li>
       <li>shanbhag<sup>[15]</sup></li>
       <li>triangle<sup>[16]</sup></li>
