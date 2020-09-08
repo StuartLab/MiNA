@@ -93,7 +93,7 @@ The links listed below provide a starting point for using, modifying, and discus
   </tbody>
  </table>
  
- <b>Median Filter</b></br>
+ <b> [Median Filter](https://imagejdocu.tudor.lu/gui/process/filters#median)</b></br>
  Smooths each pixel by replacing each pixel with the neighbourhood median.
  <table>
   <tbody>
@@ -101,7 +101,7 @@ The links listed below provide a starting point for using, modifying, and discus
  </tbody>
  </table>
  
- <b>Unsharp Mask</b></br>
+ <b>[Unsharp Mask](https://imagejdocu.tudor.lu/gui/process/filters#unsharp_mask)</b></br>
  Sharpens and enhances edges by subtracting a blurred version of the image (the unsharp mask) from the original. The unsharp mask is created by Gaussian blurring the original image and then multiplying by the “Mask Weight” parameter.
  <table>
   <tbody>
@@ -110,7 +110,7 @@ The links listed below provide a starting point for using, modifying, and discus
   </tbody>
  </table>
  
- <b>Enhance Local Contrast CLAHE</b></br>
+ <b>[Enhance Local Contrast CLAHE](https://imagej.net/Enhance_Local_Contrast_(CLAHE))</b></br>
  Enhances local contrast of the image.
  <table>
   <tbody>
