@@ -53,7 +53,7 @@ The links listed below provide a starting point for using, modifying, and discus
   </tbody>
  </table>
  
- Once the image has been binarized, the area or volume can be estimated by simply counting the number of signal positive pixels/voxels and multiplying by the area or volume of the pixel/voxel approximated as a rectangle or rectangular prism. In the binarized image, magenta represents the signal positive pixels, while the background pixels are black. This binarized copy is overlaid upon the original image after processing as an accuracy/artifact check measure. The area or volume of the image occupied by signal is returned as the mitochondrial footprint, the units of which will depend on how the image has been calibrated. You can check the image calibration under Image → Properties.
+ Once the image has been binarized, the area or volume can be estimated by simply counting the number of signal positive pixels/voxels and multiplying by the area or volume of the pixel/voxel approximated as a rectangle or rectangular prism. In the binarized image, magenta represents the signal positive pixels, while the background pixels are black. This binarized copy is overlaid upon the original image after processing as an accuracy/artifact check measure. The area or volume of the image occupied by signal is returned as the mitochondrial footprint, the units of which will depend on how the image has been calibrated. You can check the image calibration under Image → Properties. Note that any fluorescence signal rising above the background threshold will be considered a mitochondrial structure here and included in the calculation, so it is important to verify that your labelling is mitochondria-specific.
 </details>
 
 <details>
