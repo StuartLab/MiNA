@@ -163,7 +163,7 @@ def preview_side_by_side(overlay, filtered, table):
     split_pane.setDividerLocation(400)
     split_pane.setBounds(0,0,813,450)
 
-    frame = JFrame(" "*40 + "Orignal+Overlay" + " "*(split_pane.getWidth()*1/9) + "Preprocessed Image")
+    frame = JFrame(" "*10 + "Orignal+Overlay" + " "*(split_pane.getWidth()*1/9) + "Preprocessed Image")
     frame.setSize(820,600)
     frame.add(split_pane)
     frame.add(plus);frame.add(minus)
