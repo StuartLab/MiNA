@@ -152,7 +152,7 @@ The links listed below provide a starting point for using, modifying, and discus
  
  <b>2.</b> Select a single cell using the rectangular ROI tool. You may make a copy of the cropped region if you wish. </br>
  
- <b>3.</b> Run the script by navigating to Plugins -> StuartLab -> MiNA Scripts -> MiNA Analyze Morphology. A user dialog will pop up. Fill in the parameters as desired and select OK to run the analysis. </br>
+ <b>3.</b> Run the script by navigating to Plugins -> StuartLab -> MiNA Analyze Morphology. The user interface will pop up. Fill in the parameters as desired and select OK to run the analysis. </br>
  
  <b>4.</b> An overlay will be generated for you to visually inspect the faithfulness of the analysis. The magenta region is the binarized signal used for calculating the area or volume. The green lines are the morphological skeleton. The yellow dots represent the end points of the skeleton and the blue dots represen the junctions.</br>
  

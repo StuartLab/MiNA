@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@Plugin(type = Command.class, menuPath = "Plugins>StuartLab>MiNA Analyze Morphology beta")
+@Plugin(type = Command.class, menuPath = "Plugins>StuartLab>MiNA Analyze Morphology")
 
 /**
  * Main user interface for MiNA
