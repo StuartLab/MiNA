@@ -51,10 +51,7 @@ class SimpleSheet():
         self.rt.incrementCounter()
         for arg in args:
             for key, value in arg.items():
-                if isinstance(value, (int, float)):
-                    self.rt.addValue(key, value)
-                else:
-                    self.rt.addValue(key, str(value))
+                self.rt.addValue(key, value)
 
     def writeRows(self, *args):
         '''
@@ -99,10 +96,7 @@ class SimpleSheet():
             self.rt.incrementCounter()
             for arg in args:
                 for key, value in arg.items():
-                    if isinstance(value[row], (int, float)):
-                        self.rt.addValue(key, value[row])
-                    else:
-                        self.rt.addValue(key, str(value[row]))
+                    self.rt.addValue(key, value[row])
 
     def getRow(self, index):
         '''
