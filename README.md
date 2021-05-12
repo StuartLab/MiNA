@@ -139,6 +139,7 @@ The links listed below provide a starting point for using, modifying, and discus
    <tr> <td>network branches median</td> <td>The median number of attached lines used to represent each structure.</td> </tr>
    <tr> <td>network branches stdevp</td> <td>The standard deviation (population) of the numper of connected lines used to represent each of the mitochondrial structures.
     </td> </tr>
+   <tr> <td>donuts</td> <td> The number of mitochondrial donuts present in the image. A mitochondrial donut is defined as a structure that has no end-points (a donut with no arms) or a structure with a single end-point (a donut with a single arm). </td> </tr>
    <tr> <td>user comment</td> <td>The comment supplied by the user. If key value pairs are provided, they will be put in an appropriate column.</td> </tr> 
   </tbody>
  </table>
