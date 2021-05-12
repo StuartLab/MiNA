@@ -47,20 +47,12 @@ import warnings
 
 from collections import OrderedDict
 
-from java.awt import Color
-from java.io import File
-
 from ij import IJ
-from ij import ImagePlus
 from ij import WindowManager
-from ij.gui import ImageRoi, OvalRoi
-from ij.gui import Overlay
-from ij.measure import ResultsTable, Measurements
+from ij.measure import Measurements
 from ij.plugin import Duplicator
-from ij.process import ImageStatistics
 
 from net.imglib2.img.display.imagej import ImageJFunctions
-from net.imglib2.type.numeric.integer import UnsignedByteType
 
 from sc.fiji.analyzeSkeleton import AnalyzeSkeleton_;
 
@@ -123,7 +115,7 @@ def threshold_image(imp):
 # The run function..............................................................
 def run(imp_original, preprocessor_path, postprocessor_path, threshold_method, user_comment):
     imp = Duplicator().run(imp_original, imp_original.getChannel(), imp_original.getChannel(), 1, imp_original.getNSlices(), 1, imp_original.getNFrames())
-    
+
     output_parameters = OrderedDict([("image title", ""),
                                      ("preprocessor path", float),
                                      ("post processor path", float),
@@ -142,7 +134,8 @@ def run(imp_original, preprocessor_path, postprocessor_path, threshold_method, u
                                      ("summed branch lengths stdev", float),
                                      ("network branches mean", float),
                                      ("network branches median", float),
-                                     ("network branches stdev", float)])
+                                     ("network branches stdev", float),
+                                     ("donuts", int)])
 
     # Perform any preprocessing steps...
     status.showStatus("Preprocessing image...")
@@ -215,14 +208,39 @@ def run(imp_original, preprocessor_path, postprocessor_path, threshold_method, u
     summed_lengths = []
     graphs = skel_result.getGraph()
 
+    num_donuts = 0
     for graph in graphs:
         summed_length = 0.0
         edges = graph.getEdges()
+        vertices = {}
         for edge in edges:
             length = edge.getLength()
             branch_lengths.append(length)
             summed_length += length
+
+            # keep track of the number of times a vertex appears in edges in a given graph
+            for vertex in [edge.getV1(), edge.getV2()]:
+                if vertex in vertices:
+                    vertices[vertex] += 1
+                else:
+                    vertices[vertex] = 1
+
+        is_donut = True
+        # donut_arms = 0
+        for k in vertices:
+            # if a vertex appeared less than twice
+            if vertices[k] <= 1:
+                # donut_arms += 1
+                # if donut_arms > 1:
+                is_donut = False
+                break
+
+        if is_donut and len(edges) >= 1:
+            num_donuts += 1
+
         summed_lengths.append(summed_length)
+
+    output_parameters["donuts"] = num_donuts
 
     output_parameters["branch length mean"] = mina.statistics.mean(branch_lengths)
     output_parameters["branch length median"] = mina.statistics.median(branch_lengths)
