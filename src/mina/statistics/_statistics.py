@@ -24,7 +24,7 @@ def mean(data):
     '''
     n = len(data)
     if n >= 1:
-        return(float(sum(data) / n))
+        return(sum(data) / float(n))
     else:
         return(float("nan"))
 
