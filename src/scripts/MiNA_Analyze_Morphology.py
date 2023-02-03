@@ -3,10 +3,10 @@
 #@ File(label="Post-processing path:", value ="", required=False) postprocessor_path
 #@ String(label = "Thresholding Op:", value="otsu", choices={"huang", "ij1", "intermodes", "isoData", "li", "maxEntropy", "maxLikelihood", "mean", "minError", "minimum", "moments", "otsu", "percentile", "renyiEntropy", "rosin", "shanbhag", "triangle", "yen"}) threshold_method
 #@ Boolean(label="Use ridge detection (2D only):", value=False) use_ridge_detection
-#@ BigInteger(label="High contrast:", value=75, required=False) rd_max
-#@ BigInteger(label="Low contrast:", value=5, required=False) rd_min
-#@ BigInteger(label="Line width:", value=1, required=False) rd_width
-#@ BigInteger(label="Line length:", value=3, required=False) rd_length
+#@ Integer(label="High contrast:", value=75, required=False) rd_max
+#@ Integer(label="Low contrast:", value=5, required=False) rd_min
+#@ Integer(label="Line width:", value=1, required=False) rd_width
+#@ Integer(label="Line length:", value=3, required=False) rd_length
 #@ String(label="User comment: ", value="") user_comment
 
 #@ Boolean use_median
